@@ -1,149 +1,1085 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BOQ Alignment & AI Rate Transfer Tool</title>
-<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-<style>
-:root{--bg:#f6f8fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#d0d5dd;--head:#f2f4f7;--blue:#155eef;--green:#079455;--red:#d92d20;--amber:#dc6803;--purple:#6938ef;--shadow:0 16px 40px rgba(16,24,40,.08)}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
-.wrap{max-width:1700px;margin:auto;padding:22px}.hero,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-.hero{padding:22px;margin-bottom:16px}.brand{display:flex;gap:12px;align-items:center}.logo{width:46px;height:46px;border-radius:14px;background:var(--blue);color:#fff;font-weight:950;display:grid;place-items:center}.tag{font-size:12px;font-weight:900;color:var(--blue);letter-spacing:.08em;text-transform:uppercase}.subtag{font-size:13px;font-weight:800;color:#344054}h1{margin:10px 0 6px;font-size:32px}p{margin:6px 0;color:var(--muted);line-height:1.55}.grid{display:grid;grid-template-columns:1fr;gap:16px}.card{padding:16px}.title{font-size:13px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;color:#344054;margin:0 0 12px}.small{font-size:12px;color:var(--muted);line-height:1.45}.rules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.rule{background:#eef4ff;border:1px solid #c7d7fe;border-radius:13px;padding:12px}.rule b{font-size:13px}.rule span{display:block;font-size:12px;color:#475467;margin-top:4px;line-height:1.4}
-.row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;margin:8px 0 5px;font-size:12px;font-weight:800;color:#344054}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;font:inherit;color:var(--ink)}textarea{min-height:80px}button{border:0;border-radius:11px;padding:10px 14px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer}button.secondary{background:#fff;color:#344054;border:1px solid var(--line)}button.green{background:var(--green)}button.amber{background:#f79009;color:#1d2939}button.purple{background:var(--purple)}button:disabled{opacity:.45;cursor:not-allowed}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.status{border:1px solid var(--line);background:#f8fafc;border-radius:12px;padding:11px;margin-top:10px;font-size:13px;color:#344054}.warn{background:#fffaeb;border-color:#fedf89;color:#7a4d00}.ok{background:#ecfdf3;border-color:#abefc6;color:#05603a}.bad{background:#fef3f2;border-color:#fecdca;color:#912018}
-.tableBox{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}table{width:100%;border-collapse:collapse;min-width:900px}th,td{border-bottom:1px solid #eaecf0;padding:9px 10px;font-size:13px;text-align:left;vertical-align:middle}th{background:var(--head);color:#344054;font-size:12px;text-transform:uppercase;letter-spacing:.04em}td select,td input{min-width:180px;padding:7px 8px}.sheetTable th:first-child,.sheetTable td:first-child{width:80px;text-align:center}.field{font-weight:900}.required{color:var(--red);font-weight:900}.optional{color:var(--muted)}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:900}.matched{background:#ecfdf3;color:#067647}.ignored{background:#f2f4f7;color:#475467}.missing{background:#fef3f2;color:#b42318}.extra{background:#fffaeb;color:#b54708}.review{background:#eef4ff;color:#1849a9}.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.kpi .v{font-size:22px;font-weight:950}.kpi .l{font-size:11px;color:var(--muted);margin-top:4px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.footer{text-align:center;color:#667085;font-size:12px;margin:18px 0}
-.aiBox{border:1px solid #d6bbfb;background:#f9f5ff;border-radius:16px;padding:14px;margin-top:12px}.aiReview{white-space:pre-wrap;background:#fff;border:1px solid #e9d7fe;border-radius:12px;padding:12px;max-height:280px;overflow:auto}.chatWindow{background:#fff;border:1px solid #e9d7fe;border-radius:12px;padding:12px;min-height:160px;max-height:300px;overflow:auto;margin-top:10px}.msg{margin:8px 0;padding:10px 12px;border-radius:12px;line-height:1.45}.userMsg{background:#eef4ff;margin-left:12%}.aiMsg{background:#f2f4f7;margin-right:12%}.chatRow{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.modal{position:fixed;inset:0;background:rgba(16,24,40,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modalBox{max-width:760px;width:100%;background:#fff;border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.25);padding:20px}.q{border:1px solid var(--line);border-radius:13px;padding:12px;margin:10px 0;background:#fcfcfd}.q label{display:flex;gap:8px;align-items:center;font-weight:700}.q input[type=radio]{width:auto}.hidden{display:none!important}
-@media(max-width:900px){.rules,.kpis,.row,.row2,.chatRow{grid-template-columns:1fr}}
-</style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BOQ Alignment & AI Rate Transfer Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <style>
+        :root {
+            --bg: #f6f8fb;
+            --card: #fff;
+            --ink: #101828;
+            --muted: #667085;
+            --line: #d0d5dd;
+            --head: #f2f4f7;
+            --blue: #155eef;
+            --green: #079455;
+            --red: #d92d20;
+            --amber: #dc6803;
+            --purple: #6938ef;
+            --shadow: 0 16px 40px rgba(1, 18, 40, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, Segoe UI, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+        }
+
+        .wrap {
+            max-width: 1900px;
+            margin: auto;
+            padding: 22px;
+        }
+
+        .hero {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+
+        .brand {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: var(--blue);
+            color: #fff;
+            font-weight: 950;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+        }
+
+        h1 {
+            margin: 12px 0 8px;
+            font-size: 28px;
+        }
+
+        .tag {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subtag {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            padding: 22px;
+            margin-bottom: 16px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 16px;
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .status {
+            padding: 12px;
+            background: #eff8ff;
+            border: 1px solid #b2ddff;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #0055cc;
+            margin: 12px 0;
+        }
+
+        .status.warn {
+            background: #fffbeb;
+            border-color: #fcd34d;
+            color: #92400e;
+        }
+
+        .status.bad {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+
+        .status.good {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .btns {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--blue);
+            color: white;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button.secondary {
+            background: var(--head);
+            color: var(--ink);
+            border: 1px solid var(--line);
+        }
+
+        button.green {
+            background: var(--green);
+        }
+
+        button.purple {
+            background: var(--purple);
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(21, 94, 239, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 8px 0 5px;
+            font-size: 12px;
+            font-weight: 800;
+            color: #34404b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Dual Screen Layout */
+        .dual-screen {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .screen-panel {
+            border: 2px solid var(--line);
+            border-radius: 12px;
+            padding: 16px;
+            background: var(--head);
+            display: flex;
+            flex-direction: column;
+            max-height: 650px;
+        }
+
+        .screen-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--line);
+        }
+
+        .boq-table-container {
+            flex: 1;
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .boq-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .boq-table th {
+            background: var(--head);
+            padding: 10px;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .boq-table td {
+            padding: 10px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+        }
+
+        .boq-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .boq-row {
+            cursor: grab;
+            user-select: none;
+        }
+
+        .boq-row:active {
+            cursor: grabbing;
+        }
+
+        .boq-row.dragging {
+            opacity: 0.5;
+            background: #fef3c7 !important;
+        }
+
+        .boq-row.selected {
+            background: #dbeafe;
+            border-left: 4px solid var(--blue);
+        }
+
+        .row-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .selection-area {
+            border: 2px dashed var(--green);
+            border-radius: 8px;
+            padding: 12px;
+            background: rgba(7, 148, 85, 0.05);
+            min-height: 80px;
+            margin: 12px 0;
+        }
+
+        .selection-area.active {
+            background: rgba(7, 148, 85, 0.1);
+            border-color: var(--green);
+        }
+
+        .selection-area h4 {
+            margin: 0 0 8px;
+            font-size: 12px;
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .selected-items-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .item-chip {
+            background: var(--green);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .item-chip button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        .step-indicator {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--head);
+            border: 2px solid var(--line);
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .step-badge.active {
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+        }
+
+        .step-badge.done {
+            background: var(--green);
+            color: white;
+            border-color: var(--green);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .q {
+            margin: 16px 0;
+        }
+
+        .q b {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .q label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 16px;
+            margin-bottom: 0;
+            text-transform: none;
+            font-weight: 400;
+        }
+
+        input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 1200px) {
+            .dual-screen {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .drag-hint {
+            font-size: 11px;
+            color: var(--muted);
+            font-style: italic;
+            padding: 8px;
+            text-align: center;
+            border-top: 1px solid var(--line);
+            background: var(--head);
+        }
+    </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="hero">
-    <div class="brand"><div class="logo">BQ</div><div><div class="tag">Candy CCS to Client BOQ</div><div class="subtag">AI-assisted BOQ alignment, rate transfer and formula review</div></div></div>
-    <h1>BOQ Alignment & AI Rate Transfer Tool</h1>
-    <p>Upload the Client BOQ and CCS BOQ, map sheets and columns, run AI review, then apply only CCS rate-column digits into the Client BOQ. Amounts are calculated in the Client BOQ as quantity × rate; CCS totals are never copied.</p>
-    <div class="rules">
-      <div class="rule"><b>Rate only</b><span>Only numeric CCS rate values are transferred.</span></div>
-      <div class="rule"><b>No blind row order</b><span>Matching uses description, quantity and bill context.</span></div>
-      <div class="rule"><b>AI review gate</b><span>AI checks risks and gives next actions before export.</span></div>
-      <div class="rule"><b>Additional items</b><span>CCS-only items are identified and controlled separately.</span></div>
+    <div class="wrap">
+        <div class="hero">
+            <div class="brand">
+                <div class="logo">BQ</div>
+                <div>
+                    <div class="tag">Candy CCS to Client BOQ</div>
+                    <div class="subtag">Visual rate transfer with manual additional items selection</div>
+                </div>
+            </div>
+            <h1>BOQ Alignment & AI Rate Transfer Tool</h1>
+            <p>Upload both BOQs side-by-side. Select areas in Client BOQ for additional items, then drag CCS items to add them. The tool will transfer rates only.</p>
+        </div>
+
+        <!-- Step Indicator -->
+        <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
+            <div class="step-badge active" id="step1">1</div>
+            <div class="step-badge" id="step2">2</div>
+            <div class="step-badge" id="step3">3</div>
+            <div class="step-badge" id="step4">4</div>
+        </div>
+
+        <!-- STEP 1: Upload Files -->
+        <div class="card step-panel active" id="stepPanel1">
+            <div class="title">Step 1: Upload Excel Workbooks</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <label>Client BOQ (without pricing)</label>
+                    <input type="file" id="clientFile" accept=".xlsx,.xlsm,.xls">
+                </div>
+                <div>
+                    <label>CCS BOQ (with pricing)</label>
+                    <input type="file" id="ccsFile" accept=".xlsx,.xlsm,.xls">
+                </div>
+            </div>
+            <div class="status" id="fileStatus">Select both files</div>
+            <div class="btns">
+                <button id="uploadFilesBtn">Upload & Continue</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Sheet & Column Selection -->
+        <div class="card step-panel" id="stepPanel2">
+            <div class="title">Step 2: Select Sheets & Map Columns</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label>Client BOQ Sheet</label>
+                    <select id="clientSheet"></select>
+                </div>
+                <div>
+                    <label>CCS BOQ Sheet</label>
+                    <select id="ccsSheet"></select>
+                </div>
+            </div>
+
+            <div class="title" style="margin-top: 24px; margin-bottom: 12px;">Column Mapping</div>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; font-size: 12px;">
+                <div>
+                    <label>Description</label>
+                    <select id="colDesc"></select>
+                </div>
+                <div>
+                    <label>Quantity</label>
+                    <select id="colQty"></select>
+                </div>
+                <div>
+                    <label>Unit</label>
+                    <select id="colUnit"></select>
+                </div>
+                <div>
+                    <label>Rate</label>
+                    <select id="colRate"></select>
+                </div>
+                <div>
+                    <label>Amount</label>
+                    <select id="colAmount"></select>
+                </div>
+            </div>
+
+            <div class="btns">
+                <button class="secondary" id="backStep1">Back</button>
+                <button id="nextStep2">Load & Continue</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: Visual Selection -->
+        <div class="card step-panel" id="stepPanel3">
+            <div class="title">Step 3: Select Additional Items</div>
+            <div class="small">Left: Click rows to mark areas for additional items in Client BOQ. Right: Drag items from CCS BOQ to add them.</div>
+
+            <div class="dual-screen">
+                <!-- CLIENT BOQ SCREEN -->
+                <div>
+                    <div class="screen-title">📋 Client BOQ - Select Allocation Area</div>
+                    <div class="boq-table-container" id="clientTableContainer">
+                        <table class="boq-table" id="clientTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px;"></th>
+                                    <th>Description</th>
+                                    <th>Qty</th>
+                                    <th>Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="status" id="clientStatus">No data loaded</div>
+
+                    <h4 style="margin-top: 16px; font-size: 13px;">Selected Row Position</h4>
+                    <div class="selection-area" id="clientSelectionArea">
+                        <h4>📍 Row Position: None selected</h4>
+                        <p style="font-size: 12px; color: var(--muted); margin: 0;">Click a row in the Client BOQ to select where additional items will be added</p>
+                    </div>
+                </div>
+
+                <!-- CCS BOQ SCREEN -->
+                <div>
+                    <div class="screen-title">📦 CCS BOQ - Drag Additional Items</div>
+                    <div class="boq-table-container" id="ccsTableContainer">
+                        <table class="boq-table" id="ccsTable">
+                            <thead>
+                                <tr>
+                                    <th style="width: 30px;">✓</th>
+                                    <th>Description</th>
+                                    <th>Qty</th>
+                                    <th>Unit</th>
+                                    <th>Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ccsTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="drag-hint">💡 Drag rows from here to add as additional items</div>
+
+                    <h4 style="margin-top: 16px; font-size: 13px;">Additional Items to Add</h4>
+                    <div class="selection-area active" id="addItemsArea">
+                        <h4>✨ Dragged Items</h4>
+                        <div class="selected-items-list" id="addedItemsList">
+                            <span style="font-size: 12px; color: var(--muted);">Drag CCS items here to add</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btns">
+                <button class="secondary" id="backStep2">Back</button>
+                <button id="nextStep3">Continue</button>
+            </div>
+        </div>
+
+        <!-- STEP 4: Review & Apply -->
+        <div class="card step-panel" id="stepPanel4">
+            <div class="title">Step 4: Review & Apply Rates</div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div>
+                    <label>Expected Final Total</label>
+                    <input type="number" id="expectedTotal" placeholder="e.g., 6275388.65">
+                </div>
+                <div>
+                    <label>Text Keywords (ignore rows)</label>
+                    <input type="text" id="textKeywords" value="included, excluded, by client, by others, n/a, nil, tbc, tba">
+                </div>
+            </div>
+
+            <div class="status warn">Review all selections above before applying rates. Once applied, amounts will be calculated as Quantity × Rate.</div>
+
+            <div class="btns">
+                <button class="secondary" id="backStep3">Back</button>
+                <button class="green" id="applyRatesBtn">Apply Rates & Generate File</button>
+            </div>
+
+            <div class="status" id="processStatus"></div>
+        </div>
+
+        <div class="footer">BOQ Alignment & AI Rate Transfer Tool | Visual Selection | Rate-only transfer | Version 6.0</div>
     </div>
-  </div>
 
-  <div class="grid">
-    <div class="card">
-      <div class="title">1. Upload Excel Workbooks</div>
-      <div class="row2">
-        <div><label>Client BOQ workbook / without pricing</label><input type="file" id="clientFile" accept=".xlsx,.xlsm,.xls"></div>
-        <div><label>CCS BOQ workbook / with pricing</label><input type="file" id="ccsFile" accept=".xlsx,.xlsm,.xls"></div>
-      </div>
-      <div class="status" id="fileStatus">Upload both files, then confirm the pre-check questions. The tool will build Table 1 and Table 2 automatically.</div>
-      <div class="btns"><button id="uploadBtn">Upload & Start Pre-check</button><button class="secondary" id="reloadBtn">Rebuild Tables</button></div>
+    <!-- PRE-CHECK MODAL -->
+    <div class="modal" id="precheckModal">
+        <div class="modal-box">
+            <div class="modal-title">Pre-check before loading BOQs</div>
+            <p>Confirm these points before continuing:</p>
+            <div class="q">
+                <b>1. Are both BOQs in generally the same bill/element alignment?</b>
+                <label><input type="radio" name="q1" value="yes"> Yes</label>
+                <label><input type="radio" name="q1" value="no"> No</label>
+            </div>
+            <div class="q">
+                <b>2. Do you understand that you'll manually select areas for additional items?</b>
+                <label><input type="radio" name="q2" value="yes"> Yes</label>
+                <label><input type="radio" name="q2" value="no"> No</label>
+            </div>
+            <div class="status bad hidden" id="precheckStop">Stop: Please arrange your BOQs properly first.</div>
+            <div class="btns">
+                <button id="continuePrecheck">Continue</button>
+                <button class="secondary" id="cancelPrecheck">Cancel</button>
+            </div>
+        </div>
     </div>
 
-    <div class="card">
-      <div class="title">Table 1 - Sheet Selection & Alignment</div>
-      <div class="small">Every Client BOQ sheet is listed below. Ignore non-priced sheets, summaries, cover pages or instruction sheets. For priced bill sheets, select the matching CCS BOQ sheet.</div>
-      <div class="status warn"><b>Rule:</b> If CCS has additional items between existing Client BOQ items, insert blank items in the Client BOQ first, or keep additional items in a controlled separate/additional section. Do not allow uncontrolled insertion.</div>
-      <div class="tableBox" style="margin-top:12px"><table class="sheetTable"><thead><tr><th>Ignore</th><th>Client BOQ Sheet</th><th>Matching CCS BOQ Sheet</th><th>Process Status</th><th>Notes</th></tr></thead><tbody id="sheetMapBody"><tr><td colspan="5">Upload files to list sheets.</td></tr></tbody></table></div>
-    </div>
+    <script>
+        // Global State
+        const S = {
+            clientWb: null,
+            ccsWb: null,
+            clientSheetName: '',
+            ccsSheetName: '',
+            clientRows: [],
+            ccsRows: [],
+            colMap: {},
+            selectedClientRow: null,
+            selectedClientRowNum: null,
+            addedItems: [],
+            audit: [],
+            outputBuffer: null,
+        };
 
-    <div class="card">
-      <div class="title">Table 2 - Column Mapping</div>
-      <div class="small">Map Client and CCS columns. CCS Amount/Total is intentionally not mapped because CCS totals must not be copied.</div>
-      <div class="tableBox" style="margin-top:12px"><table class="columnTable"><thead><tr><th>BOQ Field</th><th>Client BOQ Column</th><th>CCS BOQ Column</th><th>Required</th><th>Purpose</th></tr></thead><tbody id="columnMapBody"><tr><td colspan="5">Upload files to list columns.</td></tr></tbody></table></div>
-    </div>
+        const E = {};
+        const elementIds = [
+            'clientFile', 'ccsFile', 'uploadFilesBtn', 'fileStatus',
+            'clientSheet', 'ccsSheet', 'colDesc', 'colQty', 'colUnit', 'colRate', 'colAmount',
+            'backStep1', 'nextStep2', 'clientTableBody', 'ccsTableBody', 'clientSelectionArea',
+            'addItemsArea', 'addedItemsList', 'backStep2', 'nextStep3',
+            'expectedTotal', 'textKeywords', 'backStep3', 'applyRatesBtn', 'processStatus',
+            'precheckModal', 'continuePrecheck', 'cancelPrecheck', 'precheckStop',
+            'clientTableContainer', 'ccsTableContainer', 'clientStatus', 'step1', 'step2', 'step3', 'step4',
+            'stepPanel1', 'stepPanel2', 'stepPanel3', 'stepPanel4'
+        ];
 
-    <div class="card">
-      <div class="title">3. AI Review, Transfer Options & Expected Total</div>
-      <div class="row">
-        <div><label>Expected final total after applying rates</label><input id="expectedTotal" placeholder="Example: 6275388.65"></div>
-        <div><label>Additional item handling</label><select id="extraMode"><option value="separate">Recommended: Add CCS-only items to separate sheet</option><option value="same">Insert CCS-only items at end of respective Client sheet</option><option value="ignore">Do not add CCS-only items</option></select></div>
-        <div><label>Text rows / non-priced keywords</label><input id="textKeywords" value="included, excluded, by client, by others, n/a, nil, tbc, tba"></div>
-      </div>
-      <div class="status warn"><b>Note:</b> Expected total may vary if the Client BOQ has hidden rows, merged cells, summary formulas, page totals or manual total cells. Download the final file and check the formulas before submission.</div>
-      <div class="btns"><button class="purple" id="aiBtn" disabled>Run AI Review Before Apply</button><button id="processBtn">Apply Rates After Review</button><button class="green" id="downloadBtn" disabled>Download Rate-Applied Client BOQ</button><button class="amber" id="auditBtn" disabled>Download Audit Log</button></div>
-      <div class="status" id="processStatus">Waiting for sheet and column mapping.</div>
-      <div class="aiBox" id="aiBox">
-        <div class="title">AI Review & Chat Guidance</div>
-        <div class="small">Run AI Review first. Then use the chat box to ask what to correct, where to place additional items, why totals do not match, or whether the file is safe to export.</div>
-        <div class="aiReview" id="aiReviewText">AI review not run yet.</div>
-        <div class="chatWindow" id="chatWindow"><div class="msg aiMsg">After AI review, ask me: “What should I correct first?” or “Why are totals not matching?”</div></div>
-        <div class="chatRow"><input id="chatInput" placeholder="Ask AI what to do next after review..." disabled><button class="purple" id="chatSend" disabled>Ask AI</button></div>
-      </div>
-    </div>
+        elementIds.forEach(id => { E[id] = document.getElementById(id); });
 
-    <div class="card">
-      <div class="title">4. Result Dashboard</div>
-      <div class="kpis">
-        <div class="kpi"><div class="v" id="kProcessed">0</div><div class="l">Sheets Processed</div></div>
-        <div class="kpi"><div class="v" id="kMatched">0</div><div class="l">Rows Rated</div></div>
-        <div class="kpi"><div class="v" id="kReview">0</div><div class="l">Needs Review</div></div>
-        <div class="kpi"><div class="v" id="kExtras">0</div><div class="l">Additional Items</div></div>
-        <div class="kpi"><div class="v mono" id="kActual">0.00</div><div class="l">Calculated Output Total</div></div>
-        <div class="kpi"><div class="v mono" id="kDiff">0.00</div><div class="l">Difference</div></div>
-      </div>
-      <div class="tableBox" style="margin-top:12px;max-height:420px"><table><thead><tr><th>Status</th><th>Client Sheet</th><th>CCS Sheet</th><th>Item No</th><th>Description</th><th>Client Qty</th><th>CCS Qty</th><th>Rate Applied</th><th>Confidence</th><th>Note</th></tr></thead><tbody id="auditBody"><tr><td colspan="10">No results yet.</td></tr></tbody></table></div>
-    </div>
-  </div>
-  <div class="footer">BOQ Alignment & AI Rate Transfer Tool | Rate-only transfer | AI-assisted review | Version 5.2</div>
-</div>
+        // Utility Functions
+        function norm(v) { return String(v ?? '').replace(/\s+/g, ' ').trim().toLowerCase(); }
+        function clean(v) { return norm(v).replace(/[^a-z0-9 ]/g, '').trim(); }
+        function text(cell) { const v = cell?.value; if (v == null) return ''; if (typeof v === 'object' && v.richText) return v.richText.map(rt => rt.text).join(''); return String(v); }
 
-<div class="modal" id="precheckModal"><div class="modalBox">
-  <div class="title">Pre-check before loading BOQs</div>
-  <p>Confirm these points before the tool builds the mapping tables.</p>
-  <div class="q"><b>1. Are both BOQs generally in the same bill/element alignment?</b><label><input type="radio" name="q1" value="yes">Yes</label><label><input type="radio" name="q1" value="no">No</label></div>
-  <div class="q"><b>2. Are additional CCS items already incorporated in the Client BOQ as blank/unpriced rows?</b><label><input type="radio" name="q2" value="yes">Yes</label><label><input type="radio" name="q2" value="no">No</label></div>
-  <div class="q"><b>3. If not incorporated, are CCS additional items clearly placed in a separate sheet or at the end of the relevant bill?</b><label><input type="radio" name="q3" value="yes">Yes</label><label><input type="radio" name="q3" value="no">No</label></div>
-  <div class="status bad hidden" id="precheckStop"><b>Stop:</b> Arrange the BOQs properly first. Additional items must either be inserted in Client BOQ as blank rows, clearly located in a separate CCS sheet, or clearly placed at the end of the relevant bill.</div>
-  <div class="btns"><button id="continuePrecheck">Continue</button><button class="secondary" id="cancelPrecheck">Cancel</button></div>
-</div></div>
+        async function loadWb(file) {
+            const wb = new ExcelJS.Workbook();
+            await wb.xlsx.load(await file.arrayBuffer());
+            return wb;
+        }
 
-<script>
-const S={clientWb:null,ccsWb:null,clientName:'',ccsName:'',sheetRows:[],audit:[],outputBuffer:null,auditBuffer:null,aiReview:null,aiStructured:null};
-const ids=['clientFile','ccsFile','uploadBtn','reloadBtn','fileStatus','sheetMapBody','columnMapBody','expectedTotal','extraMode','textKeywords','processBtn','downloadBtn','auditBtn','aiBtn','processStatus','auditBody','kProcessed','kMatched','kReview','kExtras','kActual','kDiff','precheckModal','precheckStop','continuePrecheck','cancelPrecheck','aiReviewText','chatWindow','chatInput','chatSend'];
-const E={};ids.forEach(id=>E[id]=document.getElementById(id));
-const FIELDS=[
- {key:'item',label:'Item No',required:false,purpose:'Supports duplicate checking and audit trail'},
- {key:'desc',label:'Description',required:true,purpose:'Main matching field'},
- {key:'unit',label:'Unit',required:false,purpose:'Supports confidence checking'},
- {key:'qty',label:'Quantity',required:true,purpose:'Main matching field with description'},
- {key:'rate',label:'Rate',required:true,purpose:'Only CCS rate digits are transferred into Client rate column'},
- {key:'amount',label:'Client Amount / Total',required:true,purpose:'Client output formula = Client Qty × Rate; CCS column intentionally not required'}
-];
-const CAND={item:['item no','item number','boq no','bill no','ref','code','item code','sr no'],desc:['description','item description','particulars','scope','work description','details'],unit:['unit','uom','um'],qty:['qty','quantity','quanity'],rate:['rate','unit rate','unit price','price'],amount:['amount','total','line total','total amount','value']};
-function norm(v){return String(v??'').replace(/\s+/g,' ').trim().toLowerCase()}function clean(v){return norm(v).replace(/[^a-z0-9 ]/g,'').trim()}function text(cell){const v=cell?.value;if(v==null)return'';if(typeof v==='object'){if(v.richText)return v.richText.map(x=>x.text).join('');if(v.text)return String(v.text);if(v.result!=null)return String(v.result);if(v.formula)return String(v.result??'')}return String(v)}function num(v){if(v==null||v==='')return null;if(typeof v==='number'&&isFinite(v))return v;const n=Number(String(v).replace(/,/g,'').replace(/[^0-9.\-]/g,''));return isFinite(n)?n:null}function fmt(n){return Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-async function loadWb(file){const wb=new ExcelJS.Workbook();await wb.xlsx.load(await file.arrayBuffer());return wb}
-function detectHeader(ws){let best=1,score=-1;for(let r=1;r<=Math.min(ws.rowCount,50);r++){let s=0,non=0;ws.getRow(r).eachCell({includeEmpty:false},cell=>{const c=clean(text(cell));if(c){non++;Object.values(CAND).flat().forEach(k=>{if(c.includes(clean(k)))s+=2})}});s+=Math.min(non,12)*.1;if(s>score){score=s;best=r}}return best}
-function headersFromWorkbook(wb){const set=new Map();wb.worksheets.forEach(ws=>{const hr=detectHeader(ws);ws.getRow(hr).eachCell({includeEmpty:false},(cell)=>{const t=text(cell).trim();if(t&&!set.has(clean(t)))set.set(clean(t),t)})});return [...set.values()]}
-function guess(headers,key){const arr=headers.map(h=>({h,k:clean(h)}));for(const c of CAND[key]||[]){const cc=clean(c);const f=arr.find(x=>x.k===cc)||arr.find(x=>x.k.includes(cc)||cc.includes(x.k));if(f)return f.h}return''}
-function options(list,selected=''){let h='<option value="">-- Select column --</option>';list.forEach(x=>h+=`<option ${x===selected?'selected':''} value="${esc(x)}">${esc(x)}</option>`);return h}
-function openPrecheck(){if(!E.clientFile.files[0]||!E.ccsFile.files[0]){E.fileStatus.className='status bad';E.fileStatus.textContent='Select both Client BOQ and CCS BOQ first.';return}E.precheckStop.classList.add('hidden');E.precheckModal.style.display='flex'}
-function q(name){return document.querySelector(`input[name="${name}"]:checked`)?.value||''}function validatePrecheck(){const a=q('q1'),b=q('q2'),c=q('q3');if(a!=='yes')return false;if(b==='yes')return true;if(b==='no'&&c==='yes')return true;return false}
-async function loadFilesAfterPrecheck(){E.fileStatus.textContent='Loading Excel files...';S.clientWb=await loadWb(E.clientFile.files[0]);S.ccsWb=await loadWb(E.ccsFile.files[0]);S.clientName=E.clientFile.files[0].name;S.ccsName=E.ccsFile.files[0].name;renderTables();E.fileStatus.className='status ok';E.fileStatus.textContent=`Loaded ${S.clientName} (${S.clientWb.worksheets.length} sheets) and ${S.ccsName} (${S.ccsWb.worksheets.length} sheets). Complete Table 1 and Table 2, then run AI Review.`;E.aiBtn.disabled=false}
-function renderTables(){if(!S.clientWb||!S.ccsWb)return;const ccsSheets=S.ccsWb.worksheets.map(w=>w.name);S.sheetRows=S.clientWb.worksheets.map((ws,i)=>({client:ws.name,ignore:/summary|cover|instruction|note|contents|toc/i.test(ws.name),ccs:ccsSheets[i]||''}));E.sheetMapBody.innerHTML='';S.sheetRows.forEach((r,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input type="checkbox" class="ignore" data-i="${i}" ${r.ignore?'checked':''}></td><td><b>${esc(r.client)}</b></td><td><select class="ccsSheet" data-i="${i}"><option value="">-- Select CCS sheet --</option>${ccsSheets.map(s=>`<option ${s===r.ccs?'selected':''} value="${esc(s)}">${esc(s)}</option>`).join('')}</select></td><td class="statusCell">${r.ignore?'<span class="pill ignored">Ignored</span>':(r.ccs?'<span class="pill matched">Ready</span>':'<span class="pill missing">Need CCS Sheet</span>')}</td><td>${r.ignore?'This sheet will not be priced.':'Rates will be applied from selected CCS sheet.'}</td>`;E.sheetMapBody.appendChild(tr)});
- const ch=headersFromWorkbook(S.clientWb), sh=headersFromWorkbook(S.ccsWb);E.columnMapBody.innerHTML='';FIELDS.forEach(f=>{const ccsCell=f.key==='amount'?'<span class="optional">Not used - CCS totals are not copied</span>':`<select class="ccsCol" data-key="${f.key}">${options(sh,guess(sh,f.key))}</select>`;const tr=document.createElement('tr');tr.innerHTML=`<td class="field">${f.label}</td><td><select class="clientCol" data-key="${f.key}">${options(ch,guess(ch,f.key))}</select></td><td>${ccsCell}</td><td>${f.required?'<span class="required">Required</span>':'<span class="optional">Optional</span>'}</td><td>${f.purpose}</td>`;E.columnMapBody.appendChild(tr)});wireTableEvents()}
-function wireTableEvents(){document.querySelectorAll('.ignore,.ccsSheet').forEach(el=>el.onchange=()=>{document.querySelectorAll('#sheetMapBody tr').forEach((tr,i)=>{const ig=tr.querySelector('.ignore').checked,ccs=tr.querySelector('.ccsSheet').value;S.sheetRows[i].ignore=ig;S.sheetRows[i].ccs=ccs;tr.querySelector('.statusCell').innerHTML=ig?'<span class="pill ignored">Ignored</span>':(ccs?'<span class="pill matched">Ready</span>':'<span class="pill missing">Need CCS Sheet</span>')})})}
-function getColMap(){const m={client:{},ccs:{}};document.querySelectorAll('.clientCol').forEach(s=>m.client[s.dataset.key]=s.value);document.querySelectorAll('.ccsCol').forEach(s=>m.ccs[s.dataset.key]=s.value);return m}
-function colByHeader(ws,h){if(!h)return null;const hr=detectHeader(ws);let found=null;ws.getRow(hr).eachCell({includeEmpty:false},(cell,col)=>{if(found)return;const t=clean(text(cell)),hh=clean(h);if(t===hh||t.includes(hh)||hh.includes(t))found=col});return found}
-function isTextRow(desc){const d=norm(desc);return E.textKeywords.value.split(',').map(x=>norm(x)).filter(Boolean).some(k=>d.includes(k))}
-function rows(ws,map,side){const hr=detectHeader(ws),c={};FIELDS.forEach(f=>c[f.key]=colByHeader(ws,map[side][f.key]));const out=[];for(let r=hr+1;r<=ws.rowCount;r++){const row=ws.getRow(r);const desc=c.desc?text(row.getCell(c.desc)).trim():'';const item=c.item?text(row.getCell(c.item)).trim():'';const unit=c.unit?text(row.getCell(c.unit)).trim():'';const qty=c.qty?num(text(row.getCell(c.qty))):null;const rate=c.rate?num(text(row.getCell(c.rate))):null;if(!desc&&!item&&qty==null&&rate==null)continue;out.push({r,item,desc,unit,qty,rate,textrow:isTextRow(desc),used:false,cols:c})}return {hr,cols:c,out}}
-function similarity(a,b){a=clean(a);b=clean(b);if(!a||!b)return 0;if(a===b)return 1;const aw=new Set(a.split(' ').filter(Boolean)),bw=new Set(b.split(' ').filter(Boolean));const inter=[...aw].filter(x=>bw.has(x)).length;const union=new Set([...aw,...bw]).size||1;let s=inter/union;if(a.includes(b)||b.includes(a))s+=.15;return Math.min(1,s)}
-function bestMatch(c,arr){let best=null,score=0,reason='';for(const s of arr.filter(x=>!x.used&&!x.textrow)){let sc=similarity(c.desc,s.desc)*0.68;if(c.qty!=null&&s.qty!=null){const diff=Math.abs(c.qty-s.qty),rel=diff/Math.max(1,Math.abs(c.qty));if(rel===0)sc+=.25;else if(rel<=.01)sc+=.20;else if(rel<=.03)sc+=.12;else sc-=.18}if(c.unit&&s.unit&&clean(c.unit)===clean(s.unit))sc+=.05;if(c.item&&s.item&&clean(c.item)===clean(s.item))sc+=.05;if(sc>score){score=sc;best=s;reason=`Description + quantity confidence ${Math.round(sc*100)}%.`}}return best?{row:best,confidence:Math.max(0,Math.min(1,score)),reason}:null}
-function setCell(cell,value){const style=JSON.parse(JSON.stringify(cell.style||{}));cell.value=value;cell.style=style}
-function writeRateAndFormula(ws,rowNo,cols,rate){const row=ws.getRow(rowNo);if(cols.rate)setCell(row.getCell(cols.rate),rate??'');if(cols.amount&&cols.qty&&cols.rate){const q=row.getCell(cols.qty).address, r=row.getCell(cols.rate).address;setCell(row.getCell(cols.amount),{formula:`${q}*${r}`})}}
-function addAudit(status,cs,ss,item,desc,cqty,sqty,rate,confidence,note){S.audit.push({status,clientSheet:cs,ccsSheet:ss,item,desc,cqty,sqty,rate,confidence,note})}
-async function process(){if(!S.clientWb||!S.ccsWb){E.processStatus.textContent='Upload both files first.';return}const map=getColMap();for(const k of ['desc','qty','rate','amount']){if(!map.client[k]){E.processStatus.className='status bad';E.processStatus.textContent='Table 2 incomplete: Client Description, Qty, Rate and Amount are required.';return}}for(const k of ['desc','qty','rate']){if(!map.ccs[k]){E.processStatus.className='status bad';E.processStatus.textContent='Table 2 incomplete: CCS Description, Qty and Rate are required. CCS Amount is not required.';return}}
-S.audit=[];let processed=0,matched=0,review=0,extras=0,total=0;let extraWs=null;if(E.extraMode.value==='separate'){extraWs=S.clientWb.getWorksheet('CCS Additional Items')||S.clientWb.addWorksheet('CCS Additional Items');extraWs.columns=[{header:'Client Sheet',key:'clientSheet',width:25},{header:'CCS Sheet',key:'ccsSheet',width:25},{header:'Item No',key:'item',width:15},{header:'Description',key:'desc',width:60},{header:'Unit',key:'unit',width:10},{header:'Qty',key:'qty',width:12},{header:'Rate',key:'rate',width:14},{header:'Amount Formula Note',key:'note',width:35}]}
-for(const sm of S.sheetRows){if(sm.ignore)continue;if(!sm.ccs){addAudit('Missing Sheet',sm.client,'','','','','',0,'No CCS sheet selected');continue}const cws=S.clientWb.getWorksheet(sm.client),sws=S.ccsWb.getWorksheet(sm.ccs);if(!cws||!sws)continue;processed++;const cr=rows(cws,map,'client'),sr=rows(sws,map,'ccs');for(const c of cr.out){if(c.textrow){addAudit('Text Row',sm.client,sm.ccs,c.item,c.desc,c.qty,'','',0,'Text/non-priced row kept.');continue}const m=bestMatch(c,sr.out);if(m&&m.confidence>=.78){m.row.used=true;writeRateAndFormula(cws,c.r,cr.cols,m.row.rate);matched++;if(c.qty!=null&&m.row.rate!=null)total+=c.qty*m.row.rate;addAudit('Rate Applied',sm.client,sm.ccs,c.item||m.row.item,c.desc,c.qty,m.row.qty,m.row.rate,m.confidence,`Only rate transferred. Amount formula written in Client BOQ. ${m.reason}`)}else if(m&&m.confidence>=.60){review++;addAudit('Needs Review',sm.client,sm.ccs,c.item,c.desc,c.qty,m.row.qty,m.row.rate,m.confidence,`Possible match found but rate not applied automatically. ${m.reason}`)}else{review++;addAudit('Unmatched',sm.client,sm.ccs,c.item,c.desc,c.qty,'','',m?m.confidence:0,'No safe description + quantity match. Rate not applied.')}}
- for(const s of sr.out.filter(x=>!x.used&&!x.textrow)){extras++;if(E.extraMode.value==='separate'&&extraWs){extraWs.addRow({clientSheet:sm.client,ccsSheet:sm.ccs,item:s.item,desc:s.desc,unit:s.unit,qty:s.qty,rate:s.rate,note:'CCS-only item. Review placement before submission.'})}else if(E.extraMode.value==='same'){const nr=cws.addRow([]);if(cr.cols.item)nr.getCell(cr.cols.item).value=s.item;if(cr.cols.desc)nr.getCell(cr.cols.desc).value=s.desc;if(cr.cols.unit)nr.getCell(cr.cols.unit).value=s.unit;if(cr.cols.qty)nr.getCell(cr.cols.qty).value=s.qty;writeRateAndFormula(cws,nr.number,cr.cols,s.rate)}addAudit('Additional Item',sm.client,sm.ccs,s.item,s.desc,'',s.qty,s.rate,0,'CCS item not found in Client BOQ. Treated as additional item.')}}
-const expected=num(E.expectedTotal.value)||0,diff=expected?total-expected:0;E.kProcessed.textContent=processed;E.kMatched.textContent=matched;E.kReview.textContent=review;E.kExtras.textContent=extras;E.kActual.textContent=fmt(total);E.kDiff.textContent=expected?fmt(diff):'N/A';renderAudit();const awb=new ExcelJS.Workbook();const aws=awb.addWorksheet('Audit Log');aws.columns=[{header:'Status',key:'status',width:18},{header:'Client Sheet',key:'clientSheet',width:25},{header:'CCS Sheet',key:'ccsSheet',width:25},{header:'Item No',key:'item',width:14},{header:'Description',key:'desc',width:60},{header:'Client Qty',key:'cqty',width:12},{header:'CCS Qty',key:'sqty',width:12},{header:'Rate Applied',key:'rate',width:14},{header:'Confidence',key:'confidence',width:12},{header:'Note',key:'note',width:55}];S.audit.forEach(a=>aws.addRow({...a,confidence:a.confidence?Math.round(a.confidence*100)+'%':''}));S.outputBuffer=await S.clientWb.xlsx.writeBuffer();S.auditBuffer=await awb.xlsx.writeBuffer();E.downloadBtn.disabled=false;E.auditBtn.disabled=false;E.processStatus.className=(review===0&&extras===0)?'status ok':'status warn';E.processStatus.innerHTML=(review===0&&extras===0)?'<b>Rates applied.</b> Only CCS rate-column values were transferred. Client amounts are formulas.':'<b>Review required.</b> Some rows need review and/or additional items were found. Run AI Review and check audit log before export.'}
-function renderAudit(){E.auditBody.innerHTML='';S.audit.slice(0,4000).forEach(a=>{const cls=a.status==='Rate Applied'?'matched':a.status==='Needs Review'?'review':a.status==='Additional Item'?'extra':(a.status.includes('Missing')||a.status==='Unmatched'?'missing':'ignored');const tr=document.createElement('tr');tr.innerHTML=`<td><span class="pill ${cls}">${esc(a.status)}</span></td><td>${esc(a.clientSheet)}</td><td>${esc(a.ccsSheet)}</td><td>${esc(a.item)}</td><td>${esc(a.desc)}</td><td>${a.cqty??''}</td><td>${a.sqty??''}</td><td>${a.rate!=null?fmt(a.rate):''}</td><td>${a.confidence?Math.round(a.confidence*100)+'%':''}</td><td>${esc(a.note)}</td>`;E.auditBody.appendChild(tr)})}
-async function runAIReview(){E.aiReviewText.textContent='Running AI review...';try{const map=getColMap();const res=await fetch('/api/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'review',auditData:{rules:['Only CCS rate digits transferred','CCS totals are not copied','Client amount formula = Client Qty × Rate','Additional items = CCS-only items'],sheetMapping:S.sheetRows,columnMapping:map,audit:S.audit.slice(0,800),expectedTotal:E.expectedTotal.value,additionalMode:E.extraMode.value}})});const data=await res.json();if(data.error)throw new Error(data.error);S.aiReview=data.review;S.aiStructured=data.structured;E.aiReviewText.textContent=data.review||'AI review completed.';E.chatInput.disabled=false;E.chatSend.disabled=false;addChat('ai','AI review completed. Ask me what to correct first, whether it is safe to export, or how to handle additional items.')}catch(err){E.aiReviewText.textContent='AI review failed: '+err.message+'\nCheck Vercel environment variable OPENAI_API_KEY and api/review.js.'}}
-function addChat(who,msg){const div=document.createElement('div');div.className='msg '+(who==='user'?'userMsg':'aiMsg');div.textContent=msg;E.chatWindow.appendChild(div);E.chatWindow.scrollTop=E.chatWindow.scrollHeight}
-async function sendChat(){const q=E.chatInput.value.trim();if(!q)return;addChat('user',q);E.chatInput.value='';E.chatSend.disabled=true;try{const res=await fetch('/api/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'chat',question:q,context:{aiReview:S.aiReview,structured:S.aiStructured,audit:S.audit.slice(0,500),sheetMapping:S.sheetRows,expectedTotal:E.expectedTotal.value,extraMode:E.extraMode.value}})});const data=await res.json();addChat('ai',data.reply||data.error||'No reply received.')}catch(err){addChat('ai','AI chat failed: '+err.message)}finally{E.chatSend.disabled=false}}
-E.uploadBtn.onclick=openPrecheck;E.cancelPrecheck.onclick=()=>E.precheckModal.style.display='none';E.continuePrecheck.onclick=async()=>{if(validatePrecheck()){E.precheckModal.style.display='none';await loadFilesAfterPrecheck()}else{E.precheckStop.classList.remove('hidden')}};E.reloadBtn.onclick=renderTables;E.processBtn.onclick=process;E.aiBtn.onclick=runAIReview;E.chatSend.onclick=sendChat;E.chatInput.onkeydown=e=>{if(e.key==='Enter')sendChat()};E.downloadBtn.onclick=()=>saveAs(new Blob([S.outputBuffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'Rate_Applied_Client_BOQ.xlsx');E.auditBtn.onclick=()=>saveAs(new Blob([S.auditBuffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'BOQ_Rate_Transfer_Audit_Log.xlsx');
-</script>
+        function detectHeader(ws) {
+            let best = 1, score = -1;
+            for (let r = 1; r <= Math.min(ws.rowCount, 50); r++) {
+                let s = 0, non = 0;
+                ws.getRow(r).eachCell({ includeEmpty: false }, cell => {
+                    const c = clean(text(cell));
+                    if (c) { non++; if (c.length > 2 && c.length < 30) s++; }
+                });
+                if (non > 3 && s > score) { score = s; best = r; }
+            }
+            return best;
+        }
+
+        function getHeaders(ws) {
+            const hr = detectHeader(ws);
+            const headers = [];
+            ws.getRow(hr).eachCell({ includeEmpty: false }, (cell) => {
+                headers.push(text(cell).trim());
+            });
+            return headers;
+        }
+
+        function getRows(ws, map) {
+            const hr = detectHeader(ws);
+            const out = [];
+            for (let r = hr + 1; r <= ws.rowCount; r++) {
+                const row = ws.getRow(r);
+                const desc = text(row.getCell(map.desc)) || '';
+                if (!desc.trim()) continue;
+                out.push({
+                    rowNum: r,
+                    desc: desc.trim(),
+                    qty: parseFloat(text(row.getCell(map.qty))) || null,
+                    unit: text(row.getCell(map.unit)) || '',
+                    rate: parseFloat(text(row.getCell(map.rate))) || null,
+                    amount: parseFloat(text(row.getCell(map.amount))) || null,
+                    original: { desc, qty: text(row.getCell(map.qty)), unit: text(row.getCell(map.unit)), rate: text(row.getCell(map.rate)) }
+                });
+            }
+            return out;
+        }
+
+        // Step Navigation
+        function showStep(n) {
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.step-badge').forEach(b => b.classList.remove('active'));
+            E[`stepPanel${n}`].classList.add('active');
+            E[`step${n}`].classList.add('active');
+        }
+
+        function markStepDone(n) {
+            E[`step${n}`].classList.add('done');
+        }
+
+        // STEP 1: Upload Files
+        E.uploadFilesBtn.onclick = async () => {
+            if (!E.clientFile.files[0] || !E.ccsFile.files[0]) {
+                E.fileStatus.textContent = '❌ Select both files';
+                E.fileStatus.className = 'status bad';
+                return;
+            }
+            E.precheckModal.classList.add('show');
+        };
+
+        E.cancelPrecheck.onclick = () => { E.precheckModal.classList.remove('show'); };
+
+        E.continuePrecheck.onclick = async () => {
+            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
+            if (q1 !== 'yes' || q2 !== 'yes') {
+                E.precheckStop.classList.remove('hidden');
+                return;
+            }
+            E.precheckModal.classList.remove('show');
+            E.fileStatus.textContent = '⏳ Loading files...';
+            try {
+                S.clientWb = await loadWb(E.clientFile.files[0]);
+                S.ccsWb = await loadWb(E.ccsFile.files[0]);
+                E.fileStatus.textContent = '✅ Files loaded';
+                E.fileStatus.className = 'status good';
+
+                // Populate sheets
+                E.clientSheet.innerHTML = '';
+                E.ccsSheet.innerHTML = '';
+                S.clientWb.worksheets.forEach(ws => {
+                    const opt = document.createElement('option');
+                    opt.value = ws.name;
+                    opt.textContent = ws.name;
+                    E.clientSheet.appendChild(opt);
+                });
+                S.ccsWb.worksheets.forEach(ws => {
+                    const opt = document.createElement('option');
+                    opt.value = ws.name;
+                    opt.textContent = ws.name;
+                    E.ccsSheet.appendChild(opt);
+                });
+
+                markStepDone(1);
+                showStep(2);
+            } catch (err) {
+                E.fileStatus.textContent = '❌ Error loading files: ' + err.message;
+                E.fileStatus.className = 'status bad';
+            }
+        };
+
+        E.backStep1.onclick = () => showStep(1);
+
+        // STEP 2: Column Selection
+        E.nextStep2.onclick = async () => {
+            const cws = S.clientWb.getWorksheet(E.clientSheet.value);
+            const sws = S.ccsWb.getWorksheet(E.ccsSheet.value);
+
+            if (!cws || !sws) {
+                alert('Select valid sheets');
+                return;
+            }
+
+            S.clientSheetName = E.clientSheet.value;
+            S.ccsSheetName = E.ccsSheet.value;
+
+            const cHeaders = getHeaders(cws);
+            const sHeaders = getHeaders(sws);
+
+            [E.colDesc, E.colQty, E.colUnit, E.colRate, E.colAmount].forEach((el, i) => {
+                el.innerHTML = '<option value="">-- Select --</option>' +
+                    cHeaders.map((h, idx) => `<option value="${idx + 1}">${h}</option>`).join('');
+                if (i === 0) el.value = '2'; // Default desc to column 2
+                if (i === 1) el.value = '3'; // Default qty to column 3
+                if (i === 2) el.value = '4'; // Default unit to column 4
+                if (i === 3) el.value = '5'; // Default rate to column 5
+                if (i === 4) el.value = '6'; // Default amount to column 6
+            });
+
+            markStepDone(2);
+            showStep(3);
+            loadBOQData();
+        };
+
+        E.backStep2.onclick = () => showStep(2);
+
+        // STEP 3: Load BOQ Data
+        async function loadBOQData() {
+            const cws = S.clientWb.getWorksheet(S.clientSheetName);
+            const sws = S.ccsWb.getWorksheet(S.ccsSheetName);
+
+            const map = {
+                desc: parseInt(E.colDesc.value) || 2,
+                qty: parseInt(E.colQty.value) || 3,
+                unit: parseInt(E.colUnit.value) || 4,
+                rate: parseInt(E.colRate.value) || 5,
+                amount: parseInt(E.colAmount.value) || 6
+            };
+
+            S.colMap = map;
+            S.clientRows = getRows(cws, map);
+            S.ccsRows = getRows(sws, map);
+
+            renderClientTable();
+            renderCCSTable();
+        }
+
+        function renderClientTable() {
+            E.clientTableBody.innerHTML = '';
+            S.clientRows.forEach((row, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'boq-row';
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="row-checkbox" data-idx="${idx}"></td>
+                    <td>${row.desc}</td>
+                    <td>${row.qty || '-'}</td>
+                    <td>${row.unit}</td>
+                `;
+                tr.onclick = (e) => {
+                    if (e.target.tagName !== 'INPUT') {
+                        S.selectedClientRow = idx;
+                        S.selectedClientRowNum = row.rowNum;
+                        document.querySelectorAll('#clientTableBody tr').forEach(t => t.classList.remove('selected'));
+                        tr.classList.add('selected');
+                        E.clientSelectionArea.innerHTML = `<h4>📍 Row Position: "${row.desc}" (Row ${row.rowNum})</h4><p style="font-size: 12px; color: var(--muted); margin: 0;">Additional items will be added after this row</p>`;
+                    }
+                };
+                E.clientTableBody.appendChild(tr);
+            });
+        }
+
+        function renderCCSTable() {
+            E.ccsTableBody.innerHTML = '';
+            S.ccsRows.forEach((row, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'boq-row';
+                tr.draggable = true;
+                tr.dataset.idx = idx;
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="row-checkbox" data-idx="${idx}"></td>
+                    <td>${row.desc}</td>
+                    <td>${row.qty || '-'}</td>
+                    <td>${row.unit}</td>
+                    <td style="font-weight: 600; color: var(--green);">${row.rate || '-'}</td>
+                `;
+
+                tr.ondragstart = (e) => {
+                    tr.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'copy';
+                    e.dataTransfer.setData('ccs-row-idx', idx);
+                };
+
+                tr.ondragend = () => {
+                    tr.classList.remove('dragging');
+                };
+
+                E.ccsTableBody.appendChild(tr);
+            });
+
+            // Drag & drop zone
+            E.addItemsArea.ondragover = (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'copy';
+                E.addItemsArea.classList.add('active');
+            };
+
+            E.addItemsArea.ondragleave = () => {
+                E.addItemsArea.classList.remove('active');
+            };
+
+            E.addItemsArea.ondrop = (e) => {
+                e.preventDefault();
+                E.addItemsArea.classList.remove('active');
+                const idx = parseInt(e.dataTransfer.getData('ccs-row-idx'));
+                const row = S.ccsRows[idx];
+
+                if (!S.addedItems.find(item => item.idx === idx)) {
+                    S.addedItems.push({ idx, desc: row.desc, qty: row.qty, unit: row.unit, rate: row.rate });
+                    renderAddedItems();
+                }
+            };
+        }
+
+        function renderAddedItems() {
+            E.addedItemsList.innerHTML = '';
+            if (S.addedItems.length === 0) {
+                E.addedItemsList.innerHTML = '<span style="font-size: 12px; color: var(--muted);">Drag CCS items here to add</span>';
+                return;
+            }
+
+            S.addedItems.forEach((item, i) => {
+                const chip = document.createElement('div');
+                chip.className = 'item-chip';
+                chip.innerHTML = `
+                    ${item.desc} (${item.qty} ${item.unit})
+                    <button onclick="removeAddedItem(${i})">×</button>
+                `;
+                E.addedItemsList.appendChild(chip);
+            });
+        }
+
+        window.removeAddedItem = (i) => {
+            S.addedItems.splice(i, 1);
+            renderAddedItems();
+        };
+
+        E.nextStep3.onclick = () => {
+            if (S.selectedClientRow === null) {
+                alert('Please select a row position in Client BOQ where additional items should be added');
+                return;
+            }
+            if (S.addedItems.length === 0) {
+                alert('Please drag at least one item from CCS BOQ to add');
+                return;
+            }
+            markStepDone(3);
+            showStep(4);
+        };
+
+        E.backStep3.onclick = () => showStep(3);
+
+        // STEP 4: Apply Rates
+        E.applyRatesBtn.onclick = async () => {
+            if (S.selectedClientRowNum === null) {
+                E.processStatus.textContent = '❌ Select a Client BOQ row for additional items placement';
+                E.processStatus.className = 'status bad';
+                return;
+            }
+
+            E.processStatus.textContent = '⏳ Applying rates...';
+            E.processStatus.className = 'status';
+
+            try {
+                const cws = S.clientWb.getWorksheet(S.clientSheetName);
+                const map = S.colMap;
+                const insertAfterRow = S.selectedClientRowNum;
+
+                // Add additional items to Client BOQ
+                let rowOffset = 0;
+                S.addedItems.forEach((item, idx) => {
+                    const newRow = cws.insertRow(insertAfterRow + rowOffset + 1);
+                    newRow.getCell(map.desc).value = item.desc;
+                    newRow.getCell(map.qty).value = item.qty;
+                    newRow.getCell(map.unit).value = item.unit;
+                    newRow.getCell(map.rate).value = item.rate;
+                    if (map.amount) {
+                        const colLetter = String.fromCharCode(64 + map.amount);
+                        const qtyLetter = String.fromCharCode(64 + map.qty);
+                        const rateLetter = String.fromCharCode(64 + map.rate);
+                        newRow.getCell(map.amount).value = { formula: `${qtyLetter}${newRow.number}*${rateLetter}${newRow.number}` };
+                    }
+                    rowOffset++;
+                });
+
+                // Apply rates from CCS to Client (matching logic)
+                const textKeywords = E.textKeywords.value.split(',').map(k => norm(k)).filter(Boolean);
+                let ratesApplied = 0;
+
+                S.clientRows.forEach(cRow => {
+                    const cws_row = cws.getRow(cRow.rowNum);
+                    
+                    // Skip text rows
+                    const desc = norm(cRow.desc);
+                    if (textKeywords.some(k => desc.includes(k))) return;
+
+                    // Find matching CCS row by description and quantity
+                    let bestMatch = null, bestScore = 0;
+                    S.ccsRows.forEach(sRow => {
+                        const descMatch = clean(cRow.desc) === clean(sRow.desc) ? 1 : 0;
+                        const qtyMatch = cRow.qty === sRow.qty ? 1 : 0;
+                        const score = (descMatch * 0.7) + (qtyMatch * 0.3);
+
+                        if (score > bestScore) {
+                            bestScore = score;
+                            bestMatch = sRow;
+                        }
+                    });
+
+                    if (bestMatch && bestMatch.rate) {
+                        cws_row.getCell(map.rate).value = bestMatch.rate;
+                        if (map.amount && map.qty) {
+                            const qtyLetter = String.fromCharCode(64 + map.qty);
+                            const rateLetter = String.fromCharCode(64 + map.rate);
+                            const amountLetter = String.fromCharCode(64 + map.amount);
+                            cws_row.getCell(map.amount).value = { formula: `${qtyLetter}${cRow.rowNum}*${rateLetter}${cRow.rowNum}` };
+                        }
+                        ratesApplied++;
+                    }
+                });
+
+                // Generate output file
+                const buffer = await S.clientWb.xlsx.writeBuffer();
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Client_BOQ_Updated_${new Date().toISOString().split('T')[0]}.xlsx`;
+                a.click();
+                URL.revokeObjectURL(url);
+
+                E.processStatus.textContent = `✅ Complete! Applied ${ratesApplied} rates. ${S.addedItems.length} additional items added.`;
+                E.processStatus.className = 'status good';
+            } catch (err) {
+                E.processStatus.textContent = '❌ Error: ' + err.message;
+                E.processStatus.className = 'status bad';
+                console.error(err);
+            }
+        };
+    </script>
 </body>
 </html>
