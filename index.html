@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BOQ Visual Excel Preview & Additional Items Tool</title>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<style>
+:root{--bg:#f6f8fb;--card:#fff;--ink:#101828;--muted:#667085;--line:#d0d5dd;--head:#f2f4f7;--blue:#155eef;--green:#079455;--red:#d92d20;--amber:#dc6803;--purple:#6938ef;--shadow:0 14px 38px rgba(16,24,40,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1900px;margin:auto;padding:18px}.hero,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.hero{padding:20px;margin-bottom:14px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:14px;background:var(--blue);color:white;display:grid;place-items:center;font-weight:950}.tag{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:950;color:var(--blue)}.subtag{font-size:13px;font-weight:800;color:#344054}h1{margin:8px 0 5px;font-size:29px}p{margin:6px 0;color:var(--muted);line-height:1.45}.card{padding:14px;margin-bottom:14px}.title{font-size:13px;font-weight:950;letter-spacing:.08em;text-transform:uppercase;color:#344054;margin:0 0 10px}.small{font-size:12px;color:var(--muted);line-height:1.45}.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}label{display:block;margin:8px 0 5px;font-size:12px;font-weight:850;color:#344054}input,select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;font:inherit;color:var(--ink)}button{border:0;border-radius:11px;padding:10px 14px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer}button.secondary{background:#fff;color:#344054;border:1px solid var(--line)}button.green{background:var(--green)}button.amber{background:#f79009;color:#1d2939}button.purple{background:var(--purple)}button:disabled{opacity:.45;cursor:not-allowed}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.status{border:1px solid var(--line);background:#f8fafc;border-radius:12px;padding:10px 12px;font-size:13px;color:#344054;margin-top:10px}.ok{background:#ecfdf3;border-color:#abefc6;color:#05603a}.warn{background:#fffaeb;border-color:#fedf89;color:#7a4d00}.bad{background:#fef3f2;border-color:#fecdca;color:#912018}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:4px 9px;font-size:12px;font-weight:900}.pill.blue{background:#eef4ff;color:#1849a9}.pill.green{background:#ecfdf3;color:#067647}.pill.amber{background:#fffaeb;color:#b54708}.pill.red{background:#fef3f2;color:#b42318}
+.viewerGrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.excelPanel{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;min-height:600px;display:flex;flex-direction:column}.panelHead{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;background:#f8fafc;border-bottom:1px solid var(--line)}.panelTitle{font-weight:950;color:#344054;font-size:13px;text-transform:uppercase;letter-spacing:.06em}.sheetTabs{display:flex;gap:6px;overflow:auto;padding:8px 10px;border-bottom:1px solid var(--line);background:#fff}.tab{white-space:nowrap;border:1px solid var(--line);background:#f9fafb;color:#344054;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800;cursor:pointer}.tab.active{background:#155eef;color:#fff;border-color:#155eef}.tab.hasSelection{box-shadow:0 0 0 2px #abefc6 inset}.excelTools{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px;border-bottom:1px solid var(--line);background:#fcfcfd}.excelScroll{overflow:auto;max-height:640px;min-height:460px;position:relative}.excelTable{border-collapse:collapse;table-layout:fixed;width:max-content;min-width:100%;font-size:12px}.excelTable th,.excelTable td{border:1px solid #e4e7ec;height:26px;min-width:96px;max-width:320px;padding:4px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#fff}.excelTable th{position:sticky;top:0;background:#f2f4f7;z-index:3;text-align:center;font-weight:900;color:#344054}.excelTable .rowHead{position:sticky;left:0;background:#f2f4f7;z-index:2;text-align:center;min-width:46px;max-width:46px;font-weight:850;color:#475467;cursor:pointer}.excelTable th.rowCorner{position:sticky;left:0;top:0;z-index:4;min-width:46px;max-width:46px;background:#e4e7ec}.excelTable tr.clientInsert td,.excelTable tr.clientInsert .rowHead{background:#ecfdf3!important;outline:2px solid #12b76a}.excelTable tr.ccsSelected td,.excelTable tr.ccsSelected .rowHead{background:#fff7ed!important;outline:2px solid #f79009}.excelTable tr:hover td,.excelTable tr:hover .rowHead{background:#eef4ff}.cellText{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.formulaCell{color:#6938ef}.numCell{text-align:right}.emptyNotice{padding:30px;text-align:center;color:#667085}.splitActions{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}.summaryBox{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}.summaryList{margin:8px 0 0;padding-left:18px;color:#344054}.summaryList li{margin:5px 0}.auditTable{width:100%;border-collapse:collapse}.auditTable th,.auditTable td{border-bottom:1px solid #eaecf0;padding:8px 9px;font-size:12px;text-align:left}.auditTable th{background:#f2f4f7;text-transform:uppercase;letter-spacing:.04em;color:#344054}.footer{text-align:center;color:#667085;font-size:12px;margin:14px 0}.modal{position:fixed;inset:0;background:rgba(16,24,40,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:18px}.modalBox{background:#fff;border-radius:18px;max-width:760px;width:100%;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.25)}.q{border:1px solid var(--line);border-radius:13px;padding:12px;margin:10px 0;background:#fcfcfd}.q label{display:flex;gap:8px;align-items:center;font-weight:750}.q input{width:auto}.hidden{display:none!important}.aiBox{border:1px solid #d6bbfb;background:#f9f5ff;border-radius:16px;padding:14px}.aiReview{white-space:pre-wrap;background:#fff;border:1px solid #e9d7fe;border-radius:12px;padding:12px;max-height:220px;overflow:auto}.chatWindow{background:#fff;border:1px solid #e9d7fe;border-radius:12px;padding:12px;min-height:140px;max-height:260px;overflow:auto;margin-top:10px}.msg{margin:8px 0;padding:10px 12px;border-radius:12px;line-height:1.45}.userMsg{background:#eef4ff;margin-left:12%}.aiMsg{background:#f2f4f7;margin-right:12%}.chatRow{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
+@media(max-width:1100px){.viewerGrid,.splitActions,.row2,.row3,.excelTools,.chatRow{grid-template-columns:1fr}.excelScroll{max-height:480px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="brand"><div class="logo">BQ</div><div><div class="tag">Candy CCS to Client BOQ</div><div class="subtag">Excel-like preview with sheet tabs, row selection and additional-item control</div></div></div>
+    <h1>BOQ Visual Excel Preview & Additional Items Tool</h1>
+    <p>Upload both workbooks and preview them like Excel inside the browser. All sheets are shown as tabs. Select a Client BOQ insertion row/area, select CCS additional items, then insert only <b>Description + Quantity</b>. Existing rates/totals are not copied during additional-item insertion.</p>
+  </div>
+
+  <div class="card">
+    <div class="title">1. Upload Workbooks</div>
+    <div class="row2">
+      <div><label>Client BOQ workbook</label><input type="file" id="clientFile" accept=".xlsx,.xlsm,.xls"></div>
+      <div><label>CCS BOQ workbook</label><input type="file" id="ccsFile" accept=".xlsx,.xlsm,.xls"></div>
+    </div>
+    <div class="btns"><button id="uploadBtn">Upload & Preview Both BOQs</button><button class="secondary" id="resetBtn">Reset</button></div>
+    <div class="status" id="fileStatus">Upload both BOQs to show Excel-like previews with all sheet tabs.</div>
+  </div>
+
+  <div class="card">
+    <div class="title">2. Excel-like BOQ Preview Screens</div>
+    <div class="viewerGrid">
+      <div class="excelPanel">
+        <div class="panelHead"><div><div class="panelTitle">Client BOQ Preview</div><div class="small" id="clientName">No file loaded</div></div><span class="pill blue" id="clientActiveInfo">No active sheet</span></div>
+        <div class="sheetTabs" id="clientTabs"></div>
+        <div class="excelTools">
+          <div><label>Search in active Client sheet</label><input id="clientSearch" placeholder="Search text, item no, heading..."></div>
+          <div><label>Selected insertion row / area</label><input id="clientInsertInfo" readonly placeholder="Click row number in Client BOQ"></div>
+        </div>
+        <div class="excelScroll" id="clientPreview"><div class="emptyNotice">Client BOQ preview will appear here.</div></div>
+      </div>
+
+      <div class="excelPanel">
+        <div class="panelHead"><div><div class="panelTitle">CCS BOQ Preview</div><div class="small" id="ccsName">No file loaded</div></div><span class="pill amber" id="ccsSelectedInfo">0 selected</span></div>
+        <div class="sheetTabs" id="ccsTabs"></div>
+        <div class="excelTools">
+          <div><label>Search in active CCS sheet</label><input id="ccsSearch" placeholder="Search text, item no, description..."></div>
+          <div><label>Additional item row selection</label><input id="ccsSelectInfo" readonly placeholder="Click row numbers in CCS BOQ"></div>
+        </div>
+        <div class="excelScroll" id="ccsPreview"><div class="emptyNotice">CCS BOQ preview will appear here.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="title">3. Additional Item Control</div>
+    <div class="row3">
+      <div><label>Client Description Column</label><select id="clientDescCol"><option value="">Upload first</option></select></div>
+      <div><label>Client Quantity Column</label><select id="clientQtyCol"><option value="">Upload first</option></select></div>
+      <div><label>Insert position</label><select id="insertPosition"><option value="after">After selected Client row</option><option value="before">Before selected Client row</option><option value="end">End of active Client sheet</option></select></div>
+    </div>
+    <div class="row3">
+      <div><label>CCS Description Column</label><select id="ccsDescCol"><option value="">Upload first</option></select></div>
+      <div><label>CCS Quantity Column</label><select id="ccsQtyCol"><option value="">Upload first</option></select></div>
+      <div><label>Inserted item marker</label><input id="markerText" value="ADDITIONAL ITEM FROM CCS"></div>
+    </div>
+    <div class="status warn"><b>Rule:</b> User must manually choose the CCS rows that are additional items. The tool inserts only Description and Quantity to the Client BOQ insertion area. Rates and totals remain blank/unaffected for these inserted rows.</div>
+    <div class="btns"><button class="green" id="insertBtn" disabled>Insert Selected CCS Items into Client BOQ</button><button class="secondary" id="clearCcsSelection">Clear CCS Selection</button><button class="amber" id="downloadBtn" disabled>Download Updated Client BOQ</button><button class="secondary" id="auditBtn" disabled>Download Additional Item Audit</button></div>
+    <div class="status" id="actionStatus">Waiting for selection.</div>
+  </div>
+
+  <div class="splitActions">
+    <div class="card">
+      <div class="title">4. Additional Item Audit</div>
+      <div class="tableBox"><table class="auditTable"><thead><tr><th>#</th><th>Client Sheet</th><th>Insert Row</th><th>CCS Sheet</th><th>CCS Row</th><th>Description</th><th>Qty</th><th>Status</th></tr></thead><tbody id="auditBody"><tr><td colspan="8">No additional items inserted yet.</td></tr></tbody></table></div>
+    </div>
+    <div class="card aiBox">
+      <div class="title">AI Review & Chat Guidance</div>
+      <div class="small">Use this after selecting/adding items to ask what to check next. The AI receives the additional-item audit and current selections.</div>
+      <div class="btns"><button class="purple" id="aiBtn" disabled>Ask AI to Review Additional Item Placement</button></div>
+      <div class="aiReview" id="aiReviewText">AI review not run yet.</div>
+      <div class="chatWindow" id="chatWindow"><div class="msg aiMsg">After insertion, ask: “Are the additional items placed correctly?” or “What should I check before downloading?”</div></div>
+      <div class="chatRow"><input id="chatInput" placeholder="Ask AI for guidance..." disabled><button class="purple" id="chatSend" disabled>Ask AI</button></div>
+    </div>
+  </div>
+
+  <div class="footer">BOQ Visual Excel Preview & Additional Items Tool | Browser-based workbook preview | Additional items: Description + Quantity only</div>
+</div>
+
+<script>
+const S={clientWb:null,ccsWb:null,clientActive:null,ccsActive:null,clientInsertRow:null,ccsSelected:new Set(),audit:[],outputBuffer:null,auditBuffer:null,aiReview:''};
+const ids=['clientFile','ccsFile','uploadBtn','resetBtn','fileStatus','clientName','ccsName','clientTabs','ccsTabs','clientPreview','ccsPreview','clientSearch','ccsSearch','clientInsertInfo','ccsSelectInfo','clientActiveInfo','ccsSelectedInfo','clientDescCol','clientQtyCol','ccsDescCol','ccsQtyCol','insertPosition','markerText','insertBtn','clearCcsSelection','downloadBtn','auditBtn','actionStatus','auditBody','aiBtn','aiReviewText','chatWindow','chatInput','chatSend'];
+const E={};ids.forEach(id=>E[id]=document.getElementById(id));
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function text(cell){const v=cell?.value;if(v==null)return'';if(typeof v==='object'){if(v.richText)return v.richText.map(x=>x.text).join('');if(v.text!=null)return String(v.text);if(v.result!=null)return String(v.result);if(v.formula!=null)return '=' + v.formula;if(v.hyperlink)return String(v.text||v.hyperlink)}return String(v)}
+function num(v){if(v==null||v==='')return null;if(typeof v==='number'&&isFinite(v))return v;const n=Number(String(v).replace(/,/g,'').replace(/[^0-9.\-]/g,''));return isFinite(n)?n:null}
+function fmt(n){return Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+function colLetter(n){let s='';while(n>0){let m=(n-1)%26;s=String.fromCharCode(65+m)+s;n=Math.floor((n-1)/26)}return s}
+function cellClass(cell){const v=cell?.value;if(v&&typeof v==='object'&&v.formula)return 'formulaCell';if(typeof v==='number')return 'numCell';return ''}
+async function loadWb(file){const wb=new ExcelJS.Workbook();await wb.xlsx.load(await file.arrayBuffer());return wb}
+function worksheetUsedRange(ws){let maxR=Math.min(ws.rowCount||1,500);let maxC=Math.min(ws.columnCount||20,80);for(let r=1;r<=Math.min(ws.rowCount||1,500);r++){const row=ws.getRow(r);row.eachCell({includeEmpty:false},(_,c)=>{if(c>maxC&&c<=80)maxC=c})}return {maxR,maxC:Math.max(maxC,12)}}
+function makeTabs(wb,container,side){container.innerHTML='';wb.worksheets.forEach((ws,i)=>{const b=document.createElement('button');b.className='tab';b.textContent=ws.name;b.title=ws.name;b.onclick=()=>{if(side==='client'){S.clientActive=ws.name;S.clientInsertRow=null;E.clientInsertInfo.value='';renderClient()}else{S.ccsActive=ws.name;renderCcs()}};container.appendChild(b)});}
+function setActiveTabs(){[...E.clientTabs.children].forEach(b=>b.classList.toggle('active',b.textContent===S.clientActive));[...E.ccsTabs.children].forEach(b=>b.classList.toggle('active',b.textContent===S.ccsActive));}
+function buildHeaderSelects(){const cws=S.clientWb?.getWorksheet(S.clientActive), sws=S.ccsWb?.getWorksheet(S.ccsActive);fillColSelect(E.clientDescCol,cws,'description');fillColSelect(E.clientQtyCol,cws,'qty');fillColSelect(E.ccsDescCol,sws,'description');fillColSelect(E.ccsQtyCol,sws,'qty')}
+function fillColSelect(sel,ws,guess){sel.innerHTML='<option value="">-- Select column --</option>';if(!ws)return;const {maxC}=worksheetUsedRange(ws);for(let c=1;c<=maxC;c++){let sample='';for(let r=1;r<=Math.min(ws.rowCount||1,30);r++){const t=text(ws.getRow(r).getCell(c)).trim();if(t){sample=t;break}}const label=`${colLetter(c)}${sample?' - '+sample:''}`;const opt=document.createElement('option');opt.value=String(c);opt.textContent=label;sel.appendChild(opt)}autoGuess(sel,ws,guess)}
+function autoGuess(sel,ws,type){const keys=type==='qty'?['qty','quantity','quanity']:['description','item description','particulars','scope','work description'];const {maxC}=worksheetUsedRange(ws);for(let c=1;c<=maxC;c++){for(let r=1;r<=Math.min(ws.rowCount||1,20);r++){const t=text(ws.getRow(r).getCell(c)).toLowerCase();if(keys.some(k=>t.includes(k))){sel.value=String(c);return}}}}
+function renderGrid(ws,target,side,search=''){if(!ws){target.innerHTML='<div class="emptyNotice">No sheet loaded.</div>';return}const {maxR,maxC}=worksheetUsedRange(ws);const searchText=search.trim().toLowerCase();let html='<table class="excelTable"><thead><tr><th class="rowCorner"></th>';for(let c=1;c<=maxC;c++)html+=`<th>${colLetter(c)}</th>`;html+='</tr></thead><tbody>';
+for(let r=1;r<=maxR;r++){const row=ws.getRow(r);let rowText='';for(let c=1;c<=maxC;c++)rowText+=' '+text(row.getCell(c));if(searchText&&!rowText.toLowerCase().includes(searchText))continue;const isClient=side==='client';const selected=isClient?S.clientInsertRow===r:S.ccsSelected.has(`${ws.name}::${r}`);html+=`<tr data-row="${r}" class="${isClient&&selected?'clientInsert':''}${!isClient&&selected?'ccsSelected':''}"><td class="rowHead" data-row="${r}" title="Click to ${isClient?'select insertion row':'select additional item'}">${r}</td>`;for(let c=1;c<=maxC;c++){const cell=row.getCell(c);const t=text(cell);html+=`<td class="${cellClass(cell)}" title="${esc(t)}"><span class="cellText">${esc(t)}</span></td>`}html+='</tr>'}
+html+='</tbody></table>';target.innerHTML=html;target.querySelectorAll('.rowHead').forEach(h=>h.onclick=()=>{const r=Number(h.dataset.row);if(side==='client'){S.clientInsertRow=r;E.clientInsertInfo.value=`${ws.name} / Row ${r}`;renderClient()}else{const key=`${ws.name}::${r}`;S.ccsSelected.has(key)?S.ccsSelected.delete(key):S.ccsSelected.add(key);updateSelectionInfo();renderCcs()}updateButtons()});}
+function renderClient(){setActiveTabs();buildHeaderSelects();const ws=S.clientWb?.getWorksheet(S.clientActive);E.clientActiveInfo.textContent=ws?ws.name:'No active sheet';renderGrid(ws,E.clientPreview,'client',E.clientSearch.value)}
+function renderCcs(){setActiveTabs();buildHeaderSelects();const ws=S.ccsWb?.getWorksheet(S.ccsActive);renderGrid(ws,E.ccsPreview,'ccs',E.ccsSearch.value);updateSelectionInfo()}
+function updateSelectionInfo(){const count=S.ccsSelected.size;E.ccsSelectedInfo.textContent=`${count} selected`;E.ccsSelectInfo.value=count?`${count} CCS row(s) selected`:'';[...E.ccsTabs.children].forEach(b=>{const has=[...S.ccsSelected].some(k=>k.startsWith(b.textContent+'::'));b.classList.toggle('hasSelection',has)})}
+function updateButtons(){const ok=S.clientWb&&S.ccsWb&&S.clientActive&&S.ccsSelected.size&&((E.insertPosition.value==='end')||S.clientInsertRow)&&E.clientDescCol.value&&E.clientQtyCol.value&&E.ccsDescCol.value&&E.ccsQtyCol.value;E.insertBtn.disabled=!ok;E.aiBtn.disabled=!S.clientWb||!S.ccsWb;}
+async function upload(){if(!E.clientFile.files[0]||!E.ccsFile.files[0]){E.fileStatus.className='status bad';E.fileStatus.textContent='Please select both Client BOQ and CCS BOQ.';return}E.fileStatus.className='status';E.fileStatus.textContent='Loading workbooks and building Excel-like previews...';S.clientWb=await loadWb(E.clientFile.files[0]);S.ccsWb=await loadWb(E.ccsFile.files[0]);S.clientActive=S.clientWb.worksheets[0]?.name;S.ccsActive=S.ccsWb.worksheets[0]?.name;S.clientInsertRow=null;S.ccsSelected.clear();S.audit=[];S.outputBuffer=null;E.clientName.textContent=E.clientFile.files[0].name;E.ccsName.textContent=E.ccsFile.files[0].name;makeTabs(S.clientWb,E.clientTabs,'client');makeTabs(S.ccsWb,E.ccsTabs,'ccs');renderClient();renderCcs();renderAudit();E.fileStatus.className='status ok';E.fileStatus.textContent=`Loaded ${S.clientWb.worksheets.length} Client sheet(s) and ${S.ccsWb.worksheets.length} CCS sheet(s). All sheets are available as tabs.`;updateButtons()}
+function getSelectedCcsRows(){const rows=[];for(const key of S.ccsSelected){const [sheet,rowNo]=key.split('::');const ws=S.ccsWb.getWorksheet(sheet);if(ws)rows.push({sheet,rowNo:Number(rowNo),ws})}rows.sort((a,b)=>a.sheet.localeCompare(b.sheet)||a.rowNo-b.rowNo);return rows}
+function copyStyle(src,dst){try{dst.style=JSON.parse(JSON.stringify(src.style||{}));dst.numFmt=src.numFmt;dst.alignment=JSON.parse(JSON.stringify(src.alignment||{}));dst.font=JSON.parse(JSON.stringify(src.font||{}));dst.border=JSON.parse(JSON.stringify(src.border||{}));dst.fill=JSON.parse(JSON.stringify(src.fill||{}))}catch(e){}}
+async function insertAdditionalItems(){const cws=S.clientWb.getWorksheet(S.clientActive);const cDesc=Number(E.clientDescCol.value), cQty=Number(E.clientQtyCol.value), sDesc=Number(E.ccsDescCol.value), sQty=Number(E.ccsQtyCol.value);if(!cws||!cDesc||!cQty||!sDesc||!sQty){E.actionStatus.className='status bad';E.actionStatus.textContent='Select all Description and Quantity columns first.';return}const selected=getSelectedCcsRows();if(!selected.length){E.actionStatus.className='status bad';E.actionStatus.textContent='Select additional item rows from CCS BOQ first.';return}let insertAt=E.insertPosition.value==='end'?(cws.rowCount+1):(S.clientInsertRow||cws.rowCount);if(E.insertPosition.value==='after')insertAt++;
+let count=0;for(const item of selected){const srow=item.ws.getRow(item.rowNo);const desc=text(srow.getCell(sDesc)).trim();const qtyVal=srow.getCell(sQty).value;const qtyText=text(srow.getCell(sQty)).trim();if(!desc&&!qtyText)continue;cws.insertRow(insertAt,[],'i');const newRow=cws.getRow(insertAt);const refRow=cws.getRow(Math.max(1,insertAt-1));for(let c=1;c<=Math.max(cws.columnCount,20);c++)copyStyle(refRow.getCell(c),newRow.getCell(c));newRow.getCell(cDesc).value=desc;newRow.getCell(cQty).value=qtyVal??qtyText;if(E.markerText.value){newRow.getCell(Math.max(cDesc,cQty)+1).value=E.markerText.value}S.audit.push({clientSheet:S.clientActive,insertRow:insertAt,ccsSheet:item.sheet,ccsRow:item.rowNo,desc,qty:qtyText,status:'Inserted Description + Qty only'});insertAt++;count++}
+S.ccsSelected.clear();S.outputBuffer=await S.clientWb.xlsx.writeBuffer();await buildAuditWorkbook();renderClient();renderCcs();renderAudit();E.downloadBtn.disabled=false;E.auditBtn.disabled=false;E.actionStatus.className='status ok';E.actionStatus.textContent=`${count} additional item(s) inserted into ${S.clientActive}. Only Description and Quantity were inserted.`;updateButtons()}
+async function buildAuditWorkbook(){const wb=new ExcelJS.Workbook();const ws=wb.addWorksheet('Additional Item Audit');ws.columns=[{header:'#',key:'n',width:8},{header:'Client Sheet',key:'clientSheet',width:25},{header:'Insert Row',key:'insertRow',width:12},{header:'CCS Sheet',key:'ccsSheet',width:25},{header:'CCS Row',key:'ccsRow',width:12},{header:'Description',key:'desc',width:70},{header:'Qty',key:'qty',width:14},{header:'Status',key:'status',width:30}];S.audit.forEach((a,i)=>ws.addRow({n:i+1,...a}));S.auditBuffer=await wb.xlsx.writeBuffer()}
+function renderAudit(){if(!S.audit.length){E.auditBody.innerHTML='<tr><td colspan="8">No additional items inserted yet.</td></tr>';return}E.auditBody.innerHTML='';S.audit.forEach((a,i)=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${i+1}</td><td>${esc(a.clientSheet)}</td><td>${a.insertRow}</td><td>${esc(a.ccsSheet)}</td><td>${a.ccsRow}</td><td>${esc(a.desc)}</td><td>${esc(a.qty)}</td><td><span class="pill green">${esc(a.status)}</span></td>`;E.auditBody.appendChild(tr)})}
+function buildAIContext(){return {clientActiveSheet:S.clientActive,ccsActiveSheet:S.ccsActive,clientInsertionRow:S.clientInsertRow,selectedCcsRows:[...S.ccsSelected],additionalItemAudit:S.audit,clientDescColumn:E.clientDescCol.value,clientQtyColumn:E.clientQtyCol.value,ccsDescColumn:E.ccsDescCol.value,ccsQtyColumn:E.ccsQtyCol.value,rule:'Additional items insertion is controlled manually. Only Description and Quantity are inserted. Rates and totals are not copied.'}}
+async function runAIReview(question='Review the additional item placement and guide the user before download.'){E.aiReviewText.textContent='AI reviewing current selections and audit...';try{const res=await fetch('/api/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({boqData:buildAIContext(),userQuestion:question})});const data=await res.json();if(!res.ok)throw new Error(data.error||'AI review failed');S.aiReview=data.reply||data.analysis||data.review||JSON.stringify(data,null,2);E.aiReviewText.textContent=S.aiReview;E.chatInput.disabled=false;E.chatSend.disabled=false}catch(err){E.aiReviewText.textContent='AI review failed: '+err.message+'\nCheck Vercel OPENAI_API_KEY and api/review.js.'}}
+function addChat(who,msg){const div=document.createElement('div');div.className='msg '+(who==='user'?'userMsg':'aiMsg');div.textContent=msg;E.chatWindow.appendChild(div);E.chatWindow.scrollTop=E.chatWindow.scrollHeight}
+async function sendChat(){const q=E.chatInput.value.trim();if(!q)return;addChat('user',q);E.chatInput.value='';const wait=document.createElement('div');wait.className='msg aiMsg';wait.textContent='Thinking...';E.chatWindow.appendChild(wait);try{const ctx=buildAIContext();ctx.previousAIReview=S.aiReview;const res=await fetch('/api/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({boqData:ctx,userQuestion:q})});const data=await res.json();wait.textContent=data.reply||data.analysis||data.review||data.error||'No reply.'}catch(err){wait.textContent='AI chat failed: '+err.message}}
+E.uploadBtn.onclick=upload;E.resetBtn.onclick=()=>location.reload();E.clientSearch.oninput=renderClient;E.ccsSearch.oninput=renderCcs;[E.clientDescCol,E.clientQtyCol,E.ccsDescCol,E.ccsQtyCol,E.insertPosition].forEach(x=>x.onchange=updateButtons);E.clearCcsSelection.onclick=()=>{S.ccsSelected.clear();renderCcs();updateButtons()};E.insertBtn.onclick=insertAdditionalItems;E.downloadBtn.onclick=()=>S.outputBuffer&&saveAs(new Blob([S.outputBuffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'Client_BOQ_With_Additional_Items.xlsx');E.auditBtn.onclick=()=>S.auditBuffer&&saveAs(new Blob([S.auditBuffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),'Additional_Item_Audit.xlsx');E.aiBtn.onclick=()=>runAIReview();E.chatSend.onclick=sendChat;E.chatInput.onkeydown=e=>{if(e.key==='Enter')sendChat()};
+</script>
+</body>
+</html>
