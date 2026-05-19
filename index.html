@@ -28,51 +28,54 @@
 
         body {
             margin: 0;
-            font-family: Inter, Segoe UI, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg);
             color: var(--ink);
         }
 
         .wrap {
-            max-width: 1900px;
-            margin: auto;
-            padding: 22px;
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
 
         .hero {
             background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 18px;
+            border-bottom: 1px solid var(--line);
+            padding: 16px 20px;
             box-shadow: var(--shadow);
-            padding: 22px;
-            margin-bottom: 16px;
+            z-index: 100;
         }
 
         .brand {
             display: flex;
             gap: 12px;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .logo {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
             background: var(--blue);
             color: #fff;
             font-weight: 950;
             display: grid;
             place-items: center;
-            font-size: 18px;
+            font-size: 16px;
         }
 
-        h1 {
-            margin: 12px 0 8px;
-            font-size: 28px;
+        .brand > div:last-child {
+            flex: 1;
         }
 
         .tag {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             color: var(--muted);
             text-transform: uppercase;
@@ -80,73 +83,202 @@
         }
 
         .subtag {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--muted);
-            margin-top: 3px;
+            margin-top: 2px;
         }
 
-        .card {
+        h1 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            max-width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
             background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 18px;
-            box-shadow: var(--shadow);
-            padding: 22px;
-            margin-bottom: 16px;
+            border-right: 1px solid var(--line);
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        .title {
-            font-size: 16px;
+        .sidebar-section {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .sidebar-title {
+            background: var(--head);
+            padding: 10px 12px;
+            font-size: 12px;
             font-weight: 700;
             color: var(--ink);
-            margin-bottom: 16px;
         }
 
-        .small {
-            font-size: 13px;
-            color: var(--muted);
-            margin-bottom: 12px;
-        }
-
-        .status {
+        .sidebar-content {
             padding: 12px;
-            background: #eff8ff;
-            border: 1px solid #b2ddff;
-            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .sheet-tab {
+            padding: 8px 12px;
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .sheet-tab:hover {
+            background: var(--head);
+        }
+
+        .sheet-tab.active {
+            background: var(--blue);
+            color: white;
+            border-color: var(--blue);
+        }
+
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .dual-view {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--line);
+            overflow: hidden;
+        }
+
+        .excel-view {
+            background: var(--card);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .excel-header {
+            padding: 12px 16px;
+            background: var(--head);
+            border-bottom: 1px solid var(--line);
+            font-weight: 700;
             font-size: 13px;
-            color: #0055cc;
-            margin: 12px 0;
+            color: var(--ink);
         }
 
-        .status.warn {
-            background: #fffbeb;
-            border-color: #fcd34d;
-            color: #92400e;
+        .excel-table-container {
+            flex: 1;
+            overflow: auto;
+            background: white;
         }
 
-        .status.bad {
-            background: #fef2f2;
-            border-color: #fecaca;
-            color: #991b1b;
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
         }
 
-        .status.good {
-            background: #f0fdf4;
-            border-color: #86efac;
-            color: #166534;
+        .excel-table th {
+            background: #f0f0f0;
+            padding: 8px;
+            text-align: left;
+            font-weight: 700;
+            border-bottom: 2px solid var(--line);
+            border-right: 1px solid var(--line);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            min-width: 80px;
         }
 
-        .btns {
+        .excel-table td {
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            border-right: 1px solid #f0f0f0;
+            min-width: 80px;
+        }
+
+        .excel-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .excel-table tr.selected {
+            background: #dbeafe;
+        }
+
+        .row-number {
+            background: #f0f0f0;
+            color: var(--muted);
+            font-weight: 600;
+            width: 40px;
+            text-align: center;
+            min-width: 40px;
+        }
+
+        .controls {
+            padding: 16px 20px;
+            background: var(--card);
+            border-top: 1px solid var(--line);
             display: flex;
             gap: 12px;
-            margin: 16px 0;
             flex-wrap: wrap;
+            max-width: 100%;
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        input[type="file"],
+        input[type="text"],
+        input[type="number"],
+        select {
+            padding: 8px 12px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: inherit;
+        }
+
+        input[type="file"]:focus,
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(21, 94, 239, 0.1);
         }
 
         button {
-            padding: 10px 16px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             background: var(--blue);
@@ -156,7 +288,6 @@
 
         button:hover {
             opacity: 0.9;
-            transform: translateY(-1px);
         }
 
         button:disabled {
@@ -174,213 +305,25 @@
             background: var(--green);
         }
 
-        button.purple {
-            background: var(--purple);
-        }
-
-        input[type="file"],
-        input[type="text"],
-        input[type="number"],
-        select {
-            padding: 10px 12px;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            font-size: 13px;
-            font-family: inherit;
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        select:focus {
-            outline: none;
-            border-color: var(--blue);
-            box-shadow: 0 0 0 3px rgba(21, 94, 239, 0.1);
-        }
-
-        label {
-            display: block;
-            margin: 8px 0 5px;
+        .status {
+            padding: 8px 12px;
+            background: #eff8ff;
+            border: 1px solid #b2ddff;
+            border-radius: 6px;
             font-size: 12px;
-            font-weight: 800;
-            color: #34404b;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+            color: #0055cc;
         }
 
-        /* Dual Screen Layout */
-        .dual-screen {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin: 20px 0;
+        .status.good {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #166534;
         }
 
-        .screen-panel {
-            border: 2px solid var(--line);
-            border-radius: 12px;
-            padding: 16px;
-            background: var(--head);
-            display: flex;
-            flex-direction: column;
-            max-height: 650px;
-        }
-
-        .screen-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--ink);
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--line);
-        }
-
-        .boq-table-container {
-            flex: 1;
-            overflow: auto;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: white;
-        }
-
-        .boq-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        .boq-table th {
-            background: var(--head);
-            padding: 10px;
-            text-align: left;
-            font-weight: 700;
-            border-bottom: 2px solid var(--line);
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .boq-table td {
-            padding: 10px;
-            border-bottom: 1px solid var(--line);
-            vertical-align: top;
-        }
-
-        .boq-table tr:hover {
-            background: #f9fafb;
-        }
-
-        .boq-row {
-            cursor: grab;
-            user-select: none;
-        }
-
-        .boq-row:active {
-            cursor: grabbing;
-        }
-
-        .boq-row.dragging {
-            opacity: 0.5;
-            background: #fef3c7 !important;
-        }
-
-        .boq-row.selected {
-            background: #dbeafe;
-            border-left: 4px solid var(--blue);
-        }
-
-        .row-checkbox {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .selection-area {
-            border: 2px dashed var(--green);
-            border-radius: 8px;
-            padding: 12px;
-            background: rgba(7, 148, 85, 0.05);
-            min-height: 80px;
-            margin: 12px 0;
-        }
-
-        .selection-area.active {
-            background: rgba(7, 148, 85, 0.1);
-            border-color: var(--green);
-        }
-
-        .selection-area h4 {
-            margin: 0 0 8px;
-            font-size: 12px;
-            color: var(--green);
-            font-weight: 700;
-        }
-
-        .selected-items-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .item-chip {
-            background: var(--green);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .item-chip button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 0;
-            font-size: 16px;
-            line-height: 1;
-        }
-
-        .step-panel {
-            display: none;
-        }
-
-        .step-panel.active {
-            display: block;
-        }
-
-        .step-indicator {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .step-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--head);
-            border: 2px solid var(--line);
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--muted);
-        }
-
-        .step-badge.active {
-            background: var(--blue);
-            color: white;
-            border-color: var(--blue);
-        }
-
-        .step-badge.done {
-            background: var(--green);
-            color: white;
-            border-color: var(--green);
+        .status.bad {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
         }
 
         .modal {
@@ -391,7 +334,7 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.3);
-            z-index: 1000;
+            z-index: 2000;
             justify-content: center;
             align-items: center;
         }
@@ -402,276 +345,208 @@
 
         .modal-box {
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 24px;
-            max-width: 600px;
+            max-width: 500px;
             width: 90%;
             box-shadow: var(--shadow);
         }
 
         .modal-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 16px;
         }
 
-        .q {
-            margin: 16px 0;
-        }
-
-        .q b {
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .q label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-right: 16px;
-            margin-bottom: 0;
-            text-transform: none;
-            font-weight: 400;
-        }
-
-        input[type="radio"] {
-            cursor: pointer;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid var(--line);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr;
+        .modal-form {
+            display: flex;
+            flex-direction: column;
             gap: 16px;
         }
 
-        @media (max-width: 1200px) {
-            .dual-screen {
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .tooltip {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .control-group > label {
+            min-width: 200px;
+        }
+
+        @media (max-width: 1024px) {
+            .dual-view {
                 grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 200px;
             }
         }
 
-        .drag-hint {
-            font-size: 11px;
-            color: var(--muted);
-            font-style: italic;
-            padding: 8px;
-            text-align: center;
-            border-top: 1px solid var(--line);
-            background: var(--head);
+        .row-selector {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            cursor: pointer;
+            background: white;
+            margin-right: 8px;
+        }
+
+        .row-selector.selected {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+
+        .drag-indicator {
+            color: var(--green);
+            font-weight: 700;
+            cursor: grab;
+        }
+
+        .drag-indicator:active {
+            cursor: grabbing;
         }
     </style>
 </head>
 <body>
     <div class="wrap">
+        <!-- Header -->
         <div class="hero">
             <div class="brand">
                 <div class="logo">BQ</div>
                 <div>
                     <div class="tag">Candy CCS to Client BOQ</div>
-                    <div class="subtag">Visual rate transfer with manual additional items selection</div>
+                    <h1>BOQ Alignment & Rate Transfer Tool</h1>
                 </div>
-            </div>
-            <h1>BOQ Alignment & AI Rate Transfer Tool</h1>
-            <p>Upload both BOQs side-by-side. Select areas in Client BOQ for additional items, then drag CCS items to add them. The tool will transfer rates only.</p>
-        </div>
-
-        <!-- Step Indicator -->
-        <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-            <div class="step-badge active" id="step1">1</div>
-            <div class="step-badge" id="step2">2</div>
-            <div class="step-badge" id="step3">3</div>
-            <div class="step-badge" id="step4">4</div>
-        </div>
-
-        <!-- STEP 1: Upload Files -->
-        <div class="card step-panel active" id="stepPanel1">
-            <div class="title">Step 1: Upload Excel Workbooks</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div>
-                    <label>Client BOQ (without pricing)</label>
-                    <input type="file" id="clientFile" accept=".xlsx,.xlsm,.xls">
-                </div>
-                <div>
-                    <label>CCS BOQ (with pricing)</label>
-                    <input type="file" id="ccsFile" accept=".xlsx,.xlsm,.xls">
-                </div>
-            </div>
-            <div class="status" id="fileStatus">Select both files</div>
-            <div class="btns">
-                <button id="uploadFilesBtn">Upload & Continue</button>
             </div>
         </div>
 
-        <!-- STEP 2: Sheet & Column Selection -->
-        <div class="card step-panel" id="stepPanel2">
-            <div class="title">Step 2: Select Sheets & Map Columns</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                <div>
-                    <label>Client BOQ Sheet</label>
-                    <select id="clientSheet"></select>
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">📋 Client BOQ</div>
+                    <div class="sidebar-content" id="clientSheetList"></div>
                 </div>
-                <div>
-                    <label>CCS BOQ Sheet</label>
-                    <select id="ccsSheet"></select>
-                </div>
-            </div>
-
-            <div class="title" style="margin-top: 24px; margin-bottom: 12px;">Column Mapping</div>
-            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; font-size: 12px;">
-                <div>
-                    <label>Description</label>
-                    <select id="colDesc"></select>
-                </div>
-                <div>
-                    <label>Quantity</label>
-                    <select id="colQty"></select>
-                </div>
-                <div>
-                    <label>Unit</label>
-                    <select id="colUnit"></select>
-                </div>
-                <div>
-                    <label>Rate</label>
-                    <select id="colRate"></select>
-                </div>
-                <div>
-                    <label>Amount</label>
-                    <select id="colAmount"></select>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">📦 CCS BOQ</div>
+                    <div class="sidebar-content" id="ccsSheetList"></div>
                 </div>
             </div>
 
-            <div class="btns">
-                <button class="secondary" id="backStep1">Back</button>
-                <button id="nextStep2">Load & Continue</button>
-            </div>
-        </div>
-
-        <!-- STEP 3: Visual Selection -->
-        <div class="card step-panel" id="stepPanel3">
-            <div class="title">Step 3: Select Additional Items</div>
-            <div class="small">Left: Click rows to mark areas for additional items in Client BOQ. Right: Drag items from CCS BOQ to add them.</div>
-
-            <div class="dual-screen">
-                <!-- CLIENT BOQ SCREEN -->
-                <div>
-                    <div class="screen-title">📋 Client BOQ - Select Allocation Area</div>
-                    <div class="boq-table-container" id="clientTableContainer">
-                        <table class="boq-table" id="clientTable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 30px;"></th>
-                                    <th>Description</th>
-                                    <th>Qty</th>
-                                    <th>Unit</th>
-                                </tr>
-                            </thead>
-                            <tbody id="clientTableBody"></tbody>
-                        </table>
+            <!-- Dual Excel Views -->
+            <div class="main-area">
+                <div class="dual-view">
+                    <!-- Client BOQ View -->
+                    <div class="excel-view">
+                        <div class="excel-header">Client BOQ - <span id="clientSheetName">Select Sheet</span></div>
+                        <div class="excel-table-container">
+                            <table class="excel-table" id="clientExcelTable">
+                                <thead id="clientTableHead"></thead>
+                                <tbody id="clientTableBody"></tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="status" id="clientStatus">No data loaded</div>
 
-                    <h4 style="margin-top: 16px; font-size: 13px;">Selected Row Position</h4>
-                    <div class="selection-area" id="clientSelectionArea">
-                        <h4>📍 Row Position: None selected</h4>
-                        <p style="font-size: 12px; color: var(--muted); margin: 0;">Click a row in the Client BOQ to select where additional items will be added</p>
-                    </div>
-                </div>
-
-                <!-- CCS BOQ SCREEN -->
-                <div>
-                    <div class="screen-title">📦 CCS BOQ - Drag Additional Items</div>
-                    <div class="boq-table-container" id="ccsTableContainer">
-                        <table class="boq-table" id="ccsTable">
-                            <thead>
-                                <tr>
-                                    <th style="width: 30px;">✓</th>
-                                    <th>Description</th>
-                                    <th>Qty</th>
-                                    <th>Unit</th>
-                                    <th>Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ccsTableBody"></tbody>
-                        </table>
-                    </div>
-                    <div class="drag-hint">💡 Drag rows from here to add as additional items</div>
-
-                    <h4 style="margin-top: 16px; font-size: 13px;">Additional Items to Add</h4>
-                    <div class="selection-area active" id="addItemsArea">
-                        <h4>✨ Dragged Items</h4>
-                        <div class="selected-items-list" id="addedItemsList">
-                            <span style="font-size: 12px; color: var(--muted);">Drag CCS items here to add</span>
+                    <!-- CCS BOQ View -->
+                    <div class="excel-view">
+                        <div class="excel-header">CCS BOQ - <span id="ccsSheetName">Select Sheet</span></div>
+                        <div class="excel-table-container">
+                            <table class="excel-table" id="ccsExcelTable">
+                                <thead id="ccsTableHead"></thead>
+                                <tbody id="ccsTableBody"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="btns">
-                <button class="secondary" id="backStep2">Back</button>
-                <button id="nextStep3">Continue</button>
-            </div>
-        </div>
-
-        <!-- STEP 4: Review & Apply -->
-        <div class="card step-panel" id="stepPanel4">
-            <div class="title">Step 4: Review & Apply Rates</div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                <div>
-                    <label>Expected Final Total</label>
-                    <input type="number" id="expectedTotal" placeholder="e.g., 6275388.65">
-                </div>
-                <div>
-                    <label>Text Keywords (ignore rows)</label>
-                    <input type="text" id="textKeywords" value="included, excluded, by client, by others, n/a, nil, tbc, tba">
+                <!-- Bottom Controls -->
+                <div class="controls">
+                    <label>
+                        📥 Upload Client BOQ
+                        <input type="file" id="clientFile" accept=".xlsx,.xlsm,.xls">
+                    </label>
+                    <label>
+                        📥 Upload CCS BOQ
+                        <input type="file" id="ccsFile" accept=".xlsx,.xlsm,.xls">
+                    </label>
+                    <button id="loadFilesBtn">Load Files</button>
+                    <div id="statusMsg" class="status hidden"></div>
                 </div>
             </div>
-
-            <div class="status warn">Review all selections above before applying rates. Once applied, amounts will be calculated as Quantity × Rate.</div>
-
-            <div class="btns">
-                <button class="secondary" id="backStep3">Back</button>
-                <button class="green" id="applyRatesBtn">Apply Rates & Generate File</button>
-            </div>
-
-            <div class="status" id="processStatus"></div>
         </div>
-
-        <div class="footer">BOQ Alignment & AI Rate Transfer Tool | Visual Selection | Rate-only transfer | Version 6.0</div>
     </div>
 
-    <!-- PRE-CHECK MODAL -->
-    <div class="modal" id="precheckModal">
+    <!-- Column Mapping Modal -->
+    <div class="modal" id="mappingModal">
         <div class="modal-box">
-            <div class="modal-title">Pre-check before loading BOQs</div>
-            <p>Confirm these points before continuing:</p>
-            <div class="q">
-                <b>1. Are both BOQs in generally the same bill/element alignment?</b>
-                <label><input type="radio" name="q1" value="yes"> Yes</label>
-                <label><input type="radio" name="q1" value="no"> No</label>
-            </div>
-            <div class="q">
-                <b>2. Do you understand that you'll manually select areas for additional items?</b>
-                <label><input type="radio" name="q2" value="yes"> Yes</label>
-                <label><input type="radio" name="q2" value="no"> No</label>
-            </div>
-            <div class="status bad hidden" id="precheckStop">Stop: Please arrange your BOQs properly first.</div>
-            <div class="btns">
-                <button id="continuePrecheck">Continue</button>
-                <button class="secondary" id="cancelPrecheck">Cancel</button>
+            <div class="modal-title">Map Columns</div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label>Description Column</label>
+                    <select id="mapDesc"></select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity Column</label>
+                    <select id="mapQty"></select>
+                </div>
+                <div class="form-group">
+                    <label>Unit Column</label>
+                    <select id="mapUnit"></select>
+                </div>
+                <div class="form-group">
+                    <label>Rate Column</label>
+                    <select id="mapRate"></select>
+                </div>
+                <div class="form-group">
+                    <label>Amount Column</label>
+                    <select id="mapAmount"></select>
+                </div>
+                <div class="modal-buttons">
+                    <button id="confirmMappingBtn">Confirm Mapping</button>
+                </div>
             </div>
         </div>
     </div>
@@ -681,36 +556,32 @@
         const S = {
             clientWb: null,
             ccsWb: null,
-            clientSheetName: '',
-            ccsSheetName: '',
-            clientRows: [],
-            ccsRows: [],
-            colMap: {},
-            selectedClientRow: null,
-            selectedClientRowNum: null,
-            addedItems: [],
-            audit: [],
-            outputBuffer: null,
+            clientSheetIdx: 0,
+            ccsSheetIdx: 0,
+            columnMapping: {}
         };
 
         const E = {};
         const elementIds = [
-            'clientFile', 'ccsFile', 'uploadFilesBtn', 'fileStatus',
-            'clientSheet', 'ccsSheet', 'colDesc', 'colQty', 'colUnit', 'colRate', 'colAmount',
-            'backStep1', 'nextStep2', 'clientTableBody', 'ccsTableBody', 'clientSelectionArea',
-            'addItemsArea', 'addedItemsList', 'backStep2', 'nextStep3',
-            'expectedTotal', 'textKeywords', 'backStep3', 'applyRatesBtn', 'processStatus',
-            'precheckModal', 'continuePrecheck', 'cancelPrecheck', 'precheckStop',
-            'clientTableContainer', 'ccsTableContainer', 'clientStatus', 'step1', 'step2', 'step3', 'step4',
-            'stepPanel1', 'stepPanel2', 'stepPanel3', 'stepPanel4'
+            'clientFile', 'ccsFile', 'loadFilesBtn', 'statusMsg',
+            'clientSheetList', 'ccsSheetList', 'clientSheetName', 'ccsSheetName',
+            'clientExcelTable', 'ccsExcelTable', 'clientTableHead', 'ccsTableHead',
+            'clientTableBody', 'ccsTableBody',
+            'mappingModal', 'mapDesc', 'mapQty', 'mapUnit', 'mapRate', 'mapAmount', 'confirmMappingBtn'
         ];
 
         elementIds.forEach(id => { E[id] = document.getElementById(id); });
 
         // Utility Functions
+        function text(cell) {
+            const v = cell?.value;
+            if (v == null) return '';
+            if (typeof v === 'object' && v.richText) return v.richText.map(rt => rt.text).join('');
+            return String(v);
+        }
+
         function norm(v) { return String(v ?? '').replace(/\s+/g, ' ').trim().toLowerCase(); }
         function clean(v) { return norm(v).replace(/[^a-z0-9 ]/g, '').trim(); }
-        function text(cell) { const v = cell?.value; if (v == null) return ''; if (typeof v === 'object' && v.richText) return v.richText.map(rt => rt.text).join(''); return String(v); }
 
         async function loadWb(file) {
             const wb = new ExcelJS.Workbook();
@@ -740,346 +611,151 @@
             return headers;
         }
 
-        function getRows(ws, map) {
+        function getRowData(ws, colCount) {
             const hr = detectHeader(ws);
-            const out = [];
+            const rows = [];
             for (let r = hr + 1; r <= ws.rowCount; r++) {
                 const row = ws.getRow(r);
-                const desc = text(row.getCell(map.desc)) || '';
-                if (!desc.trim()) continue;
-                out.push({
-                    rowNum: r,
-                    desc: desc.trim(),
-                    qty: parseFloat(text(row.getCell(map.qty))) || null,
-                    unit: text(row.getCell(map.unit)) || '',
-                    rate: parseFloat(text(row.getCell(map.rate))) || null,
-                    amount: parseFloat(text(row.getCell(map.amount))) || null,
-                    original: { desc, qty: text(row.getCell(map.qty)), unit: text(row.getCell(map.unit)), rate: text(row.getCell(map.rate)) }
+                const cells = [];
+                for (let c = 1; c <= colCount; c++) {
+                    cells.push(text(row.getCell(c)));
+                }
+                if (cells.some(cell => cell.trim())) {
+                    rows.push(cells);
+                }
+            }
+            return { headerRow: hr, rows: rows };
+        }
+
+        function renderSheetList(wb, containerId, selectCallback) {
+            const container = E[containerId];
+            container.innerHTML = '';
+            wb.worksheets.forEach((ws, idx) => {
+                const tab = document.createElement('div');
+                tab.className = 'sheet-tab';
+                tab.textContent = ws.name;
+                tab.onclick = () => selectCallback(idx);
+                container.appendChild(tab);
+            });
+        }
+
+        function renderExcelView(ws, containerId, headerId, bodyId, tableId) {
+            const headers = getHeaders(ws);
+            const data = getRowData(ws, headers.length);
+
+            // Render headers
+            let headerHtml = '<tr><th class="row-number">#</th>';
+            headers.forEach((h, idx) => {
+                headerHtml += `<th>${h || `Col${idx + 1}`}</th>`;
+            });
+            headerHtml += '</tr>';
+            E[headerId].innerHTML = headerHtml;
+
+            // Render body rows
+            let bodyHtml = '';
+            data.rows.slice(0, 100).forEach((row, idx) => {
+                bodyHtml += `<tr><td class="row-number">${data.headerRow + idx + 1}</td>`;
+                row.forEach(cell => {
+                    bodyHtml += `<td>${cell}</td>`;
                 });
+                bodyHtml += '</tr>';
+            });
+            E[bodyId].innerHTML = bodyHtml;
+
+            E[tableId].style.display = 'table';
+            
+            if (data.rows.length > 100) {
+                const note = document.createElement('div');
+                note.style.padding = '12px';
+                note.style.fontSize = '11px';
+                note.style.color = 'var(--muted)';
+                note.textContent = `Showing 100 of ${data.rows.length} rows`;
+                E[tableId].parentElement.appendChild(note);
             }
-            return out;
         }
 
-        // Step Navigation
-        function showStep(n) {
-            document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.step-badge').forEach(b => b.classList.remove('active'));
-            E[`stepPanel${n}`].classList.add('active');
-            E[`step${n}`].classList.add('active');
+        function populateColumnDropdowns(headers) {
+            const dropdowns = [E.mapDesc, E.mapQty, E.mapUnit, E.mapRate, E.mapAmount];
+            dropdowns.forEach(dd => {
+                dd.innerHTML = '<option value="">-- Select --</option>' +
+                    headers.map((h, idx) => `<option value="${idx}">${h || `Col${idx + 1}`}</option>`).join('');
+            });
         }
 
-        function markStepDone(n) {
-            E[`step${n}`].classList.add('done');
-        }
-
-        // STEP 1: Upload Files
-        E.uploadFilesBtn.onclick = async () => {
+        // Load Files
+        E.loadFilesBtn.onclick = async () => {
             if (!E.clientFile.files[0] || !E.ccsFile.files[0]) {
-                E.fileStatus.textContent = '❌ Select both files';
-                E.fileStatus.className = 'status bad';
+                E.statusMsg.textContent = '❌ Please select both files';
+                E.statusMsg.className = 'status bad';
+                E.statusMsg.classList.remove('hidden');
                 return;
             }
-            E.precheckModal.classList.add('show');
-        };
 
-        E.cancelPrecheck.onclick = () => { E.precheckModal.classList.remove('show'); };
+            E.statusMsg.textContent = '⏳ Loading files...';
+            E.statusMsg.className = 'status';
+            E.statusMsg.classList.remove('hidden');
 
-        E.continuePrecheck.onclick = async () => {
-            const q1 = document.querySelector('input[name="q1"]:checked')?.value;
-            const q2 = document.querySelector('input[name="q2"]:checked')?.value;
-            if (q1 !== 'yes' || q2 !== 'yes') {
-                E.precheckStop.classList.remove('hidden');
-                return;
-            }
-            E.precheckModal.classList.remove('show');
-            E.fileStatus.textContent = '⏳ Loading files...';
             try {
                 S.clientWb = await loadWb(E.clientFile.files[0]);
                 S.ccsWb = await loadWb(E.ccsFile.files[0]);
-                E.fileStatus.textContent = '✅ Files loaded';
-                E.fileStatus.className = 'status good';
 
-                // Populate sheets
-                E.clientSheet.innerHTML = '';
-                E.ccsSheet.innerHTML = '';
-                S.clientWb.worksheets.forEach(ws => {
-                    const opt = document.createElement('option');
-                    opt.value = ws.name;
-                    opt.textContent = ws.name;
-                    E.clientSheet.appendChild(opt);
-                });
-                S.ccsWb.worksheets.forEach(ws => {
-                    const opt = document.createElement('option');
-                    opt.value = ws.name;
-                    opt.textContent = ws.name;
-                    E.ccsSheet.appendChild(opt);
+                // Render sheet lists
+                renderSheetList(S.clientWb, 'clientSheetList', (idx) => {
+                    S.clientSheetIdx = idx;
+                    const ws = S.clientWb.worksheets[idx];
+                    E.clientSheetName.textContent = ws.name;
+                    renderExcelView(ws, 'clientSheetName', 'clientTableHead', 'clientTableBody', 'clientExcelTable');
                 });
 
-                markStepDone(1);
-                showStep(2);
+                renderSheetList(S.ccsWb, 'ccsSheetList', (idx) => {
+                    S.ccsSheetIdx = idx;
+                    const ws = S.ccsWb.worksheets[idx];
+                    E.ccsSheetName.textContent = ws.name;
+                    renderExcelView(ws, 'ccsSheetName', 'ccsTableHead', 'ccsTableBody', 'ccsExcelTable');
+                });
+
+                // Load initial sheets
+                const clientWs = S.clientWb.worksheets[0];
+                const ccsWs = S.ccsWb.worksheets[0];
+
+                E.clientSheetName.textContent = clientWs.name;
+                E.ccsSheetName.textContent = ccsWs.name;
+
+                renderExcelView(clientWs, 'clientSheetName', 'clientTableHead', 'clientTableBody', 'clientExcelTable');
+                renderExcelView(ccsWs, 'ccsSheetName', 'ccsTableHead', 'ccsTableBody', 'ccsExcelTable');
+
+                // Show mapping modal
+                const headers = getHeaders(clientWs);
+                populateColumnDropdowns(headers);
+                E.mappingModal.classList.add('show');
+
+                E.statusMsg.textContent = '✅ Files loaded successfully!';
+                E.statusMsg.className = 'status good';
             } catch (err) {
-                E.fileStatus.textContent = '❌ Error loading files: ' + err.message;
-                E.fileStatus.className = 'status bad';
+                E.statusMsg.textContent = '❌ Error: ' + err.message;
+                E.statusMsg.className = 'status bad';
             }
         };
 
-        E.backStep1.onclick = () => showStep(1);
-
-        // STEP 2: Column Selection
-        E.nextStep2.onclick = async () => {
-            const cws = S.clientWb.getWorksheet(E.clientSheet.value);
-            const sws = S.ccsWb.getWorksheet(E.ccsSheet.value);
-
-            if (!cws || !sws) {
-                alert('Select valid sheets');
-                return;
-            }
-
-            S.clientSheetName = E.clientSheet.value;
-            S.ccsSheetName = E.ccsSheet.value;
-
-            const cHeaders = getHeaders(cws);
-            const sHeaders = getHeaders(sws);
-
-            [E.colDesc, E.colQty, E.colUnit, E.colRate, E.colAmount].forEach((el, i) => {
-                el.innerHTML = '<option value="">-- Select --</option>' +
-                    cHeaders.map((h, idx) => `<option value="${idx + 1}">${h}</option>`).join('');
-                if (i === 0) el.value = '2'; // Default desc to column 2
-                if (i === 1) el.value = '3'; // Default qty to column 3
-                if (i === 2) el.value = '4'; // Default unit to column 4
-                if (i === 3) el.value = '5'; // Default rate to column 5
-                if (i === 4) el.value = '6'; // Default amount to column 6
-            });
-
-            markStepDone(2);
-            showStep(3);
-            loadBOQData();
-        };
-
-        E.backStep2.onclick = () => showStep(2);
-
-        // STEP 3: Load BOQ Data
-        async function loadBOQData() {
-            const cws = S.clientWb.getWorksheet(S.clientSheetName);
-            const sws = S.ccsWb.getWorksheet(S.ccsSheetName);
-
-            const map = {
-                desc: parseInt(E.colDesc.value) || 2,
-                qty: parseInt(E.colQty.value) || 3,
-                unit: parseInt(E.colUnit.value) || 4,
-                rate: parseInt(E.colRate.value) || 5,
-                amount: parseInt(E.colAmount.value) || 6
+        // Confirm Mapping
+        E.confirmMappingBtn.onclick = () => {
+            S.columnMapping = {
+                desc: parseInt(E.mapDesc.value),
+                qty: parseInt(E.mapQty.value),
+                unit: parseInt(E.mapUnit.value),
+                rate: parseInt(E.mapRate.value),
+                amount: parseInt(E.mapAmount.value)
             };
 
-            S.colMap = map;
-            S.clientRows = getRows(cws, map);
-            S.ccsRows = getRows(sws, map);
-
-            renderClientTable();
-            renderCCSTable();
-        }
-
-        function renderClientTable() {
-            E.clientTableBody.innerHTML = '';
-            S.clientRows.forEach((row, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = 'boq-row';
-                tr.innerHTML = `
-                    <td><input type="checkbox" class="row-checkbox" data-idx="${idx}"></td>
-                    <td>${row.desc}</td>
-                    <td>${row.qty || '-'}</td>
-                    <td>${row.unit}</td>
-                `;
-                tr.onclick = (e) => {
-                    if (e.target.tagName !== 'INPUT') {
-                        S.selectedClientRow = idx;
-                        S.selectedClientRowNum = row.rowNum;
-                        document.querySelectorAll('#clientTableBody tr').forEach(t => t.classList.remove('selected'));
-                        tr.classList.add('selected');
-                        E.clientSelectionArea.innerHTML = `<h4>📍 Row Position: "${row.desc}" (Row ${row.rowNum})</h4><p style="font-size: 12px; color: var(--muted); margin: 0;">Additional items will be added after this row</p>`;
-                    }
-                };
-                E.clientTableBody.appendChild(tr);
-            });
-        }
-
-        function renderCCSTable() {
-            E.ccsTableBody.innerHTML = '';
-            S.ccsRows.forEach((row, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = 'boq-row';
-                tr.draggable = true;
-                tr.dataset.idx = idx;
-                tr.innerHTML = `
-                    <td><input type="checkbox" class="row-checkbox" data-idx="${idx}"></td>
-                    <td>${row.desc}</td>
-                    <td>${row.qty || '-'}</td>
-                    <td>${row.unit}</td>
-                    <td style="font-weight: 600; color: var(--green);">${row.rate || '-'}</td>
-                `;
-
-                tr.ondragstart = (e) => {
-                    tr.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'copy';
-                    e.dataTransfer.setData('ccs-row-idx', idx);
-                };
-
-                tr.ondragend = () => {
-                    tr.classList.remove('dragging');
-                };
-
-                E.ccsTableBody.appendChild(tr);
-            });
-
-            // Drag & drop zone
-            E.addItemsArea.ondragover = (e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = 'copy';
-                E.addItemsArea.classList.add('active');
-            };
-
-            E.addItemsArea.ondragleave = () => {
-                E.addItemsArea.classList.remove('active');
-            };
-
-            E.addItemsArea.ondrop = (e) => {
-                e.preventDefault();
-                E.addItemsArea.classList.remove('active');
-                const idx = parseInt(e.dataTransfer.getData('ccs-row-idx'));
-                const row = S.ccsRows[idx];
-
-                if (!S.addedItems.find(item => item.idx === idx)) {
-                    S.addedItems.push({ idx, desc: row.desc, qty: row.qty, unit: row.unit, rate: row.rate });
-                    renderAddedItems();
-                }
-            };
-        }
-
-        function renderAddedItems() {
-            E.addedItemsList.innerHTML = '';
-            if (S.addedItems.length === 0) {
-                E.addedItemsList.innerHTML = '<span style="font-size: 12px; color: var(--muted);">Drag CCS items here to add</span>';
-                return;
-            }
-
-            S.addedItems.forEach((item, i) => {
-                const chip = document.createElement('div');
-                chip.className = 'item-chip';
-                chip.innerHTML = `
-                    ${item.desc} (${item.qty} ${item.unit})
-                    <button onclick="removeAddedItem(${i})">×</button>
-                `;
-                E.addedItemsList.appendChild(chip);
-            });
-        }
-
-        window.removeAddedItem = (i) => {
-            S.addedItems.splice(i, 1);
-            renderAddedItems();
+            E.mappingModal.classList.remove('show');
+            E.statusMsg.textContent = '✅ Column mapping confirmed. You can now drag rows and select additional items.';
+            E.statusMsg.className = 'status good';
+            E.statusMsg.classList.remove('hidden');
         };
 
-        E.nextStep3.onclick = () => {
-            if (S.selectedClientRow === null) {
-                alert('Please select a row position in Client BOQ where additional items should be added');
-                return;
-            }
-            if (S.addedItems.length === 0) {
-                alert('Please drag at least one item from CCS BOQ to add');
-                return;
-            }
-            markStepDone(3);
-            showStep(4);
-        };
-
-        E.backStep3.onclick = () => showStep(3);
-
-        // STEP 4: Apply Rates
-        E.applyRatesBtn.onclick = async () => {
-            if (S.selectedClientRowNum === null) {
-                E.processStatus.textContent = '❌ Select a Client BOQ row for additional items placement';
-                E.processStatus.className = 'status bad';
-                return;
-            }
-
-            E.processStatus.textContent = '⏳ Applying rates...';
-            E.processStatus.className = 'status';
-
-            try {
-                const cws = S.clientWb.getWorksheet(S.clientSheetName);
-                const map = S.colMap;
-                const insertAfterRow = S.selectedClientRowNum;
-
-                // Add additional items to Client BOQ
-                let rowOffset = 0;
-                S.addedItems.forEach((item, idx) => {
-                    const newRow = cws.insertRow(insertAfterRow + rowOffset + 1);
-                    newRow.getCell(map.desc).value = item.desc;
-                    newRow.getCell(map.qty).value = item.qty;
-                    newRow.getCell(map.unit).value = item.unit;
-                    newRow.getCell(map.rate).value = item.rate;
-                    if (map.amount) {
-                        const colLetter = String.fromCharCode(64 + map.amount);
-                        const qtyLetter = String.fromCharCode(64 + map.qty);
-                        const rateLetter = String.fromCharCode(64 + map.rate);
-                        newRow.getCell(map.amount).value = { formula: `${qtyLetter}${newRow.number}*${rateLetter}${newRow.number}` };
-                    }
-                    rowOffset++;
-                });
-
-                // Apply rates from CCS to Client (matching logic)
-                const textKeywords = E.textKeywords.value.split(',').map(k => norm(k)).filter(Boolean);
-                let ratesApplied = 0;
-
-                S.clientRows.forEach(cRow => {
-                    const cws_row = cws.getRow(cRow.rowNum);
-                    
-                    // Skip text rows
-                    const desc = norm(cRow.desc);
-                    if (textKeywords.some(k => desc.includes(k))) return;
-
-                    // Find matching CCS row by description and quantity
-                    let bestMatch = null, bestScore = 0;
-                    S.ccsRows.forEach(sRow => {
-                        const descMatch = clean(cRow.desc) === clean(sRow.desc) ? 1 : 0;
-                        const qtyMatch = cRow.qty === sRow.qty ? 1 : 0;
-                        const score = (descMatch * 0.7) + (qtyMatch * 0.3);
-
-                        if (score > bestScore) {
-                            bestScore = score;
-                            bestMatch = sRow;
-                        }
-                    });
-
-                    if (bestMatch && bestMatch.rate) {
-                        cws_row.getCell(map.rate).value = bestMatch.rate;
-                        if (map.amount && map.qty) {
-                            const qtyLetter = String.fromCharCode(64 + map.qty);
-                            const rateLetter = String.fromCharCode(64 + map.rate);
-                            const amountLetter = String.fromCharCode(64 + map.amount);
-                            cws_row.getCell(map.amount).value = { formula: `${qtyLetter}${cRow.rowNum}*${rateLetter}${cRow.rowNum}` };
-                        }
-                        ratesApplied++;
-                    }
-                });
-
-                // Generate output file
-                const buffer = await S.clientWb.xlsx.writeBuffer();
-                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `Client_BOQ_Updated_${new Date().toISOString().split('T')[0]}.xlsx`;
-                a.click();
-                URL.revokeObjectURL(url);
-
-                E.processStatus.textContent = `✅ Complete! Applied ${ratesApplied} rates. ${S.addedItems.length} additional items added.`;
-                E.processStatus.className = 'status good';
-            } catch (err) {
-                E.processStatus.textContent = '❌ Error: ' + err.message;
-                E.processStatus.className = 'status bad';
-                console.error(err);
-            }
-        };
+        // Initialize
+        E.clientSheetName.textContent = 'No file loaded';
+        E.ccsSheetName.textContent = 'No file loaded';
     </script>
 </body>
 </html>
